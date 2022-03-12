@@ -8,3 +8,8 @@ v.1.0:
 - big and small trucks;
 - forklift;
 - boxes.
+
+v.1.1:
+- VR setup, oculus integration;
+- player rig;
+- teleportation.
