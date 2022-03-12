@@ -1,0 +1,248 @@
+Using pre-set license
+Built from '2021.2/staging' branch; Version is '2021.2.7f1 (6bd9e232123f) revision 7068130'; Using compiler version '192829333'; Build Type 'Release'
+OS: 'Windows 10  (10.0.19042) 64bit CoreSingleLanguage' Language: 'en' Physical Memory: 15741 MB
+BatchMode: 1, IsHumanControllingUs: 0, StartBugReporterOnCrash: 0, Is64bit: 1, IsPro: 0
+
+COMMAND LINE ARGUMENTS:
+C:\Program Files\Unity\Hub\Editor\2021.2.7f1\Editor\Unity.exe
+-adb2
+-batchMode
+-noUpm
+-name
+AssetImportWorker5
+-projectPath
+C:/Unity/LogisticsVR
+-logFile
+Logs/AssetImportWorker5.log
+-srvPort
+49583
+Successfully changed project path to: C:/Unity/LogisticsVR
+C:/Unity/LogisticsVR
+[UnityMemory] Configuration Parameters - Can be set up in boot.config
+    "memorysetup-bucket-allocator-granularity=16"
+    "memorysetup-bucket-allocator-bucket-count=8"
+    "memorysetup-bucket-allocator-block-size=33554432"
+    "memorysetup-bucket-allocator-block-count=8"
+    "memorysetup-main-allocator-block-size=16777216"
+    "memorysetup-thread-allocator-block-size=16777216"
+    "memorysetup-gfx-main-allocator-block-size=16777216"
+    "memorysetup-gfx-thread-allocator-block-size=16777216"
+    "memorysetup-cache-allocator-block-size=4194304"
+    "memorysetup-typetree-allocator-block-size=2097152"
+    "memorysetup-profiler-bucket-allocator-granularity=16"
+    "memorysetup-profiler-bucket-allocator-bucket-count=8"
+    "memorysetup-profiler-bucket-allocator-block-size=33554432"
+    "memorysetup-profiler-bucket-allocator-block-count=8"
+    "memorysetup-profiler-allocator-block-size=16777216"
+    "memorysetup-profiler-editor-allocator-block-size=1048576"
+    "memorysetup-temp-allocator-size-main=16777216"
+    "memorysetup-job-temp-allocator-block-size=2097152"
+    "memorysetup-job-temp-allocator-block-size-background=1048576"
+    "memorysetup-job-temp-allocator-reduction-small-platforms=262144"
+    "memorysetup-temp-allocator-size-background-worker=32768"
+    "memorysetup-temp-allocator-size-job-worker=262144"
+    "memorysetup-temp-allocator-size-preload-manager=33554432"
+    "memorysetup-temp-allocator-size-nav-mesh-worker=65536"
+    "memorysetup-temp-allocator-size-audio-worker=65536"
+    "memorysetup-temp-allocator-size-cloud-worker=32768"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gfx=262144"
+Refreshing native plugins compatible for Editor in 86.41 ms, found 3 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Initialize engine version: 2021.2.7f1 (6bd9e232123f)
+[Subsystems] Discovering subsystems at path C:/Program Files/Unity/Hub/Editor/2021.2.7f1/Editor/Data/Resources/UnitySubsystems
+[Subsystems] Discovering subsystems at path C:/Unity/LogisticsVR/Assets
+GfxDevice: creating device client; threaded=0; jobified=0
+Direct3D:
+    Version:  Direct3D 11.0 [level 11.1]
+    Renderer: AMD Radeon(TM) Graphics (ID=0x1636)
+    Vendor:   ATI
+    VRAM:     7870 MB
+    Driver:   30.0.13025.5005
+Initialize mono
+Mono path[0] = 'C:/Program Files/Unity/Hub/Editor/2021.2.7f1/Editor/Data/Managed'
+Mono path[1] = 'C:/Program Files/Unity/Hub/Editor/2021.2.7f1/Editor/Data/MonoBleedingEdge/lib/mono/unityjit-win32'
+Mono config path = 'C:/Program Files/Unity/Hub/Editor/2021.2.7f1/Editor/Data/MonoBleedingEdge/etc'
+Using monoOptions --debugger-agent=transport=dt_socket,embedding=1,server=y,suspend=n,address=127.0.0.1:56516
+Begin MonoManager ReloadAssembly
+Registering precompiled unity dll's ...
+Register platform support module: C:/Program Files/Unity/Hub/Editor/2021.2.7f1/Editor/Data/PlaybackEngines/WindowsStandaloneSupport/UnityEditor.WindowsStandalone.Extensions.dll
+Registered in 0.006159 seconds.
+Native extension for WindowsStandalone target not found
+Refreshing native plugins compatible for Editor in 84.48 ms, found 3 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Mono: successfully reloaded assembly
+- Completed reload, in  0.622 seconds
+Domain Reload Profiling:
+	ReloadAssembly (623ms)
+		BeginReloadAssembly (93ms)
+			ExecutionOrderSort (0ms)
+			DisableScriptedObjects (0ms)
+			BackupInstance (0ms)
+			ReleaseScriptingObjects (0ms)
+			CreateAndSetChildDomain (1ms)
+		EndReloadAssembly (448ms)
+			LoadAssemblies (90ms)
+			RebuildTransferFunctionScriptingTraits (0ms)
+			SetupTypeCache (92ms)
+			ReleaseScriptCaches (0ms)
+			RebuildScriptCaches (31ms)
+			SetupLoadedEditorAssemblies (271ms)
+				LogAssemblyErrors (0ms)
+				InitializePlatformSupportModulesInManaged (16ms)
+				SetLoadedEditorAssemblies (0ms)
+				RefreshPlugins (85ms)
+				BeforeProcessingInitializeOnLoad (1ms)
+				ProcessInitializeOnLoadAttributes (123ms)
+				ProcessInitializeOnLoadMethodAttributes (46ms)
+				AfterProcessingInitializeOnLoad (0ms)
+				EditorAssembliesLoaded (0ms)
+			ExecutionOrderSort2 (0ms)
+			AwakeInstancesAfterBackupRestoration (0ms)
+Platform modules already initialized, skipping
+Registering precompiled user dll's ...
+Registered in 0.005306 seconds.
+Begin MonoManager ReloadAssembly
+Symbol file LoadedFromMemory doesn't match image C:\Unity\LogisticsVR\Library\PackageCache\com.unity.visualscripting@1.7.6\Editor\VisualScripting.Core\Dependencies\YamlDotNet\Unity.VisualScripting.YamlDotNet.dll
+Symbol file LoadedFromMemory doesn't match image C:\Unity\LogisticsVR\Library\PackageCache\com.unity.visualscripting@1.7.6\Editor\VisualScripting.Core\Dependencies\DotNetZip\Unity.VisualScripting.IonicZip.dll
+Native extension for WindowsStandalone target not found
+Refreshing native plugins compatible for Editor in 0.68 ms, found 3 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Mono: successfully reloaded assembly
+- Completed reload, in  0.953 seconds
+Domain Reload Profiling:
+	ReloadAssembly (955ms)
+		BeginReloadAssembly (107ms)
+			ExecutionOrderSort (0ms)
+			DisableScriptedObjects (5ms)
+			BackupInstance (0ms)
+			ReleaseScriptingObjects (0ms)
+			CreateAndSetChildDomain (21ms)
+		EndReloadAssembly (753ms)
+			LoadAssemblies (76ms)
+			RebuildTransferFunctionScriptingTraits (0ms)
+			SetupTypeCache (251ms)
+			ReleaseScriptCaches (1ms)
+			RebuildScriptCaches (51ms)
+			SetupLoadedEditorAssemblies (337ms)
+				LogAssemblyErrors (0ms)
+				InitializePlatformSupportModulesInManaged (11ms)
+				SetLoadedEditorAssemblies (0ms)
+				RefreshPlugins (1ms)
+				BeforeProcessingInitializeOnLoad (81ms)
+				ProcessInitializeOnLoadAttributes (215ms)
+				ProcessInitializeOnLoadMethodAttributes (21ms)
+				AfterProcessingInitializeOnLoad (8ms)
+				EditorAssembliesLoaded (0ms)
+			ExecutionOrderSort2 (0ms)
+			AwakeInstancesAfterBackupRestoration (5ms)
+Platform modules already initialized, skipping
+========================================================================
+Worker process is ready to serve import requests
+Launched and connected shader compiler UnityShaderCompiler.exe after 0.05 seconds
+Refreshing native plugins compatible for Editor in 0.68 ms, found 3 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Unloading 3213 Unused Serialized files (Serialized files now loaded: 0)
+Unloading 26 unused Assets / (112.5 KB). Loaded Objects now: 3675.
+Memory consumption went from 115.6 MB to 115.5 MB.
+Total: 3.687600 ms (FindLiveObjects: 0.685000 ms CreateObjectMapping: 0.245200 ms MarkObjects: 2.647000 ms  DeleteObjects: 0.109000 ms)
+
+AssetImportParameters requested are different than current active one (requested -> active):
+  custom:video-decoder-ogg-theora: a1e56fd34408186e4bbccfd4996cb3dc -> 
+  custom:container-muxer-webm: aa71ff27fc2769a1b78a27578f13a17b -> 
+  custom:container-demuxer-webm: 4f35f7cbe854078d1ac9338744f61a02 -> 
+  custom:video-encoder-webm-vp8: eb34c28f22e8b96e1ab97ce403110664 -> 
+  custom:video-codec-MediaFoundation-h265: 746d11721c4dcdbdad8f713fa42b33f4 -> 
+  custom:audio-encoder-webm-vorbis: bf7c407c2cedff20999df2af8eb42d56 -> 
+  custom:framework-win-MediaFoundation: 216162199b28c13a410421893ffa2e32 -> 
+  custom:container-demuxer-ogg: 62fdf1f143b41e24485cea50d1cbac27 -> 
+  custom:video-decoder-webm-vp8: 9c59270c3fd7afecdb556c50c9e8de78 -> 
+  custom:audio-decoder-ogg-vorbis: bf7c407c2cedff20999df2af8eb42d56 -> 
+========================================================================
+Received Import Request.
+  Time since last request: 10480.062628 seconds.
+  path: Assets/sample_racer/entities/desert/desert_textures/floor_sand1.png
+  artifactKey: Guid(92e0d43817c6d46a4a8e40108c04f4a9) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/sample_racer/entities/desert/desert_textures/floor_sand1.png using Guid(92e0d43817c6d46a4a8e40108c04f4a9) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'a530a4ad8d328bddd06116ad633bb560') in 0.104230 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 21.751722 seconds.
+  path: Assets/sample_racer/entities/misc/misc_asphalt_45d.png
+  artifactKey: Guid(a922ed1c6315143a9b7362a53a05c513) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/sample_racer/entities/misc/misc_asphalt_45d.png using Guid(a922ed1c6315143a9b7362a53a05c513) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '5e85896933f237be9bf7740c978242d2') in 0.022705 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000034 seconds.
+  path: Assets/sample_racer/entities/misc/misc_fance_wire.png
+  artifactKey: Guid(42fb6c3b8e26c47e6b1d53c8617c5192) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/sample_racer/entities/misc/misc_fance_wire.png using Guid(42fb6c3b8e26c47e6b1d53c8617c5192) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '3cc3cf23c71b0171d21b3b77bad1f17e') in 0.018963 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000085 seconds.
+  path: Assets/sample_racer/entities/misc/misc_entourage.png
+  artifactKey: Guid(f4987b554caa640b5b894ba1b3170cb6) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/sample_racer/entities/misc/misc_entourage.png using Guid(f4987b554caa640b5b894ba1b3170cb6) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '21611c4d24ff139ba4f746fdfb044897') in 0.019428 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000023 seconds.
+  path: Assets/sample_racer/entities/misc/misc_road_threeways.png
+  artifactKey: Guid(d873c31e20887438793fd6bb013074a2) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/sample_racer/entities/misc/misc_road_threeways.png using Guid(d873c31e20887438793fd6bb013074a2) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'f13631b20723633b53f3f02aead015a1') in 0.029464 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000056 seconds.
+  path: Assets/sample_racer/entities/misc/misc_road_twosided.png
+  artifactKey: Guid(5760cb94f435c447d917331487226de7) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/sample_racer/entities/misc/misc_road_twosided.png using Guid(5760cb94f435c447d917331487226de7) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '39bf4235828c3acc9db7b2a72e1dd50e') in 0.032813 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000041 seconds.
+  path: Assets/sample_racer/entities/misc/misc_concrete_new.png
+  artifactKey: Guid(9c3c55890fc784f76973bf8eb84de252) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/sample_racer/entities/misc/misc_concrete_new.png using Guid(9c3c55890fc784f76973bf8eb84de252) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '9170487fad07caae25daf26c20874a13') in 0.016352 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 1.456152 seconds.
+  path: Assets/sample_racer/entities/skyboxes/skyHighway.mat
+  artifactKey: Guid(8e8e6353088b99a42981414986f4527b) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/sample_racer/entities/skyboxes/skyHighway.mat using Guid(8e8e6353088b99a42981414986f4527b) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'b3fb7d180bc7dfac864df6ba2d475aae') in 0.102246 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000037 seconds.
+  path: Assets/sample_racer/entities/skyboxes/skyWaterfront.mat
+  artifactKey: Guid(b6b3cb744db667d48b2cb3540112cae1) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/sample_racer/entities/skyboxes/skyWaterfront.mat using Guid(b6b3cb744db667d48b2cb3540112cae1) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'ceb993ec78477eefea3f8ab1e565ba5e') in 0.013049 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 84.419909 seconds.
+  path: Assets/sample_racer/entities/ui/ui_atlas_02.bmp
+  artifactKey: Guid(5e853318c8760f9429c2853db1429263) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/sample_racer/entities/ui/ui_atlas_02.bmp using Guid(5e853318c8760f9429c2853db1429263) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '9488e687abb284cc05fb754ce0bc0f4e') in 0.100700 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 6.813824 seconds.
+  path: Assets/sample_racer/entities/vehicle_misc/car_inside_close_color.png
+  artifactKey: Guid(b34d98964ec554df6bb63eea75567810) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/sample_racer/entities/vehicle_misc/car_inside_close_color.png using Guid(b34d98964ec554df6bb63eea75567810) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '561c6715f3219f585d34e51c042d236a') in 0.026291 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000032 seconds.
+  path: Assets/sample_racer/entities/vehicle_misc/car_inside_normal.png
+  artifactKey: Guid(25ca8a9f688a94fc982866451fc7e44d) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/sample_racer/entities/vehicle_misc/car_inside_normal.png using Guid(25ca8a9f688a94fc982866451fc7e44d) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '6d9826c1f0e4c199b44f3f93106f966e') in 0.034755 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000034 seconds.
+  path: Assets/sample_racer/entities/vehicle_misc/car_inside_close_normal.png
+  artifactKey: Guid(a15fbbc0c92104e2e8904e85e2ea954d) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/sample_racer/entities/vehicle_misc/car_inside_close_normal.png using Guid(a15fbbc0c92104e2e8904e85e2ea954d) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'c13478e28029934cfd7c3e7b30aff0e9') in 0.018272 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000033 seconds.
+  path: Assets/sample_racer/entities/vehicle_misc/car_inside_color.png
+  artifactKey: Guid(22195ccfb84f9471b99380f878f56010) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/sample_racer/entities/vehicle_misc/car_inside_color.png using Guid(22195ccfb84f9471b99380f878f56010) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '74a0fae2b4c995eb3ffa61da8bbbe131') in 0.017984 seconds 
+Editor requested this worker to shutdown with reason: Scaling down because of idle timeout
+AssetImportWorker is now disconnected from the server
+Process exiting
+Exiting without the bug reporter. Application will terminate with return code 0
