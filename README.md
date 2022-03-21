@@ -13,3 +13,7 @@ v.1.1:
 - VR setup, oculus integration;
 - player rig;
 - teleportation.
+
+v.1.2:
+- remodel warehouse building;
+- assets cleaning.
