@@ -152,6 +152,7 @@
      <Compile Include="Assets\Oculus\SampleFramework\Core\Locomotion\Scripts\TeleportTransitionBlink.cs" />
      <Compile Include="Assets\Oculus\SampleFramework\Core\HandsInteraction\Scripts\Tools\PinchStateModule.cs" />
      <Compile Include="Assets\Oculus\Avatar\Scripts\OvrAvatarSkinnedMeshRenderPBSComponent.cs" />
+     <Compile Include="Assets\Scripts\LocomotionManager.cs" />
      <Compile Include="Assets\Oculus\Avatar\Scripts\OvrAvatarLogger.cs" />
      <Compile Include="Assets\Oculus\SampleFramework\Usage\HandsTrainExample\Scripts\WindmillBladesController.cs" />
      <Compile Include="Assets\Oculus\Avatar\Scripts\OvrAvatarRemoteDriver.cs" />
@@ -188,7 +189,6 @@
      <Compile Include="Assets\Oculus\SampleFramework\Usage\Passthrough\Scripts\SelectivePassthroughExperience.cs" />
      <Compile Include="Assets\Oculus\Avatar\Samples\SocialStarter\Assets\Scripts\PlayerController.cs" />
      <Compile Include="Assets\Oculus\SampleFramework\Usage\HandsTrainExample\Scripts\TrackSegment.cs" />
-     <Compile Include="Assets\Scripts\LocomotionManager.cs" />
      <None Include="Assets\Oculus\SampleFramework\Usage\HandsTrainExample\Shaders\XingLightShader.shader" />
      <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />
      <None Include="Assets\Oculus\Avatar\Resources\Materials\AvatarMaterialStateShader.cginc" />
@@ -239,7 +239,7 @@
      <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile Masking.shader" />
      <None Include="Assets\Oculus\SampleFramework\Usage\HandsTrainExample\Shaders\OculusSampleTrainSmokeShader.shader" />
      <None Include="Assets\Oculus\SampleFramework\Usage\OVROverlayCanvas\Shaders\UI Prerendered Opaque.shader" />
-     <None Include="Assets\POLYGON city pack\Read_me.txt" />
+     <None Include="Assets\Assets collection\POLYGON city pack\Read_me.txt" />
      <None Include="Assets\Oculus\SampleFramework\Core\Video\Plugins\Android\Audio360\NOTICE.txt" />
      <None Include="Assets\Oculus\SampleFramework\Usage\Locomotion\Shaders\TriPlanarWorld.shader" />
      <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF Overlay.shader" />
@@ -910,8 +910,14 @@
     <Reference Include="Unity.EditorCoroutines.Editor">
         <HintPath>C:\Unity\LogisticsVR\Library\ScriptAssemblies\Unity.EditorCoroutines.Editor.dll</HintPath>
     </Reference>
+    <Reference Include="Unity.XR.CoreUtils.Editor">
+        <HintPath>C:\Unity\LogisticsVR\Library\ScriptAssemblies\Unity.XR.CoreUtils.Editor.dll</HintPath>
+    </Reference>
     <Reference Include="Unity.XR.Management">
         <HintPath>C:\Unity\LogisticsVR\Library\ScriptAssemblies\Unity.XR.Management.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.XR.Oculus.Editor">
+        <HintPath>C:\Unity\LogisticsVR\Library\ScriptAssemblies\Unity.XR.Oculus.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.VisualScripting.Flow.Editor">
         <HintPath>C:\Unity\LogisticsVR\Library\ScriptAssemblies\Unity.VisualScripting.Flow.Editor.dll</HintPath>
@@ -933,6 +939,9 @@
     </Reference>
     <Reference Include="Unity.TextMeshPro">
         <HintPath>C:\Unity\LogisticsVR\Library\ScriptAssemblies\Unity.TextMeshPro.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.XR.Interaction.Toolkit">
+        <HintPath>C:\Unity\LogisticsVR\Library\ScriptAssemblies\Unity.XR.Interaction.Toolkit.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Subsystem.Registration">
         <HintPath>C:\Unity\LogisticsVR\Library\ScriptAssemblies\Unity.Subsystem.Registration.dll</HintPath>
@@ -961,11 +970,17 @@
     <Reference Include="Unity.Timeline.Editor">
         <HintPath>C:\Unity\LogisticsVR\Library\ScriptAssemblies\Unity.Timeline.Editor.dll</HintPath>
     </Reference>
+    <Reference Include="Unity.XR.CoreUtils">
+        <HintPath>C:\Unity\LogisticsVR\Library\ScriptAssemblies\Unity.XR.CoreUtils.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEditor.XR.LegacyInputHelpers">
         <HintPath>C:\Unity\LogisticsVR\Library\ScriptAssemblies\UnityEditor.XR.LegacyInputHelpers.dll</HintPath>
     </Reference>
     <Reference Include="Unity.XR.OpenXR">
         <HintPath>C:\Unity\LogisticsVR\Library\ScriptAssemblies\Unity.XR.OpenXR.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.XR.Interaction.Toolkit.Editor">
+        <HintPath>C:\Unity\LogisticsVR\Library\ScriptAssemblies\Unity.XR.Interaction.Toolkit.Editor.dll</HintPath>
     </Reference>
     <Reference Include="UnityEditor.SpatialTracking">
         <HintPath>C:\Unity\LogisticsVR\Library\ScriptAssemblies\UnityEditor.SpatialTracking.dll</HintPath>
@@ -976,29 +991,14 @@
     <Reference Include="Unity.XR.OpenXR.Features.ConformanceAutomation">
         <HintPath>C:\Unity\LogisticsVR\Library\ScriptAssemblies\Unity.XR.OpenXR.Features.ConformanceAutomation.dll</HintPath>
     </Reference>
+    <Reference Include="Unity.XR.Oculus">
+        <HintPath>C:\Unity\LogisticsVR\Library\ScriptAssemblies\Unity.XR.Oculus.dll</HintPath>
+    </Reference>
     <Reference Include="Unity.XR.OpenXR.Features.RuntimeDebugger.Editor">
         <HintPath>C:\Unity\LogisticsVR\Library\ScriptAssemblies\Unity.XR.OpenXR.Features.RuntimeDebugger.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.VisualScripting.State">
         <HintPath>C:\Unity\LogisticsVR\Library\ScriptAssemblies\Unity.VisualScripting.State.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.XR.Oculus.Editor">
-        <HintPath>C:\Unity\LogisticsVR\Library\ScriptAssemblies\Unity.XR.Oculus.Editor.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.XR.Oculus">
-        <HintPath>C:\Unity\LogisticsVR\Library\ScriptAssemblies\Unity.XR.Oculus.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.XR.CoreUtils">
-        <HintPath>C:\Unity\LogisticsVR\Library\ScriptAssemblies\Unity.XR.CoreUtils.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.XR.CoreUtils.Editor">
-        <HintPath>C:\Unity\LogisticsVR\Library\ScriptAssemblies\Unity.XR.CoreUtils.Editor.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.XR.Interaction.Toolkit.Editor">
-        <HintPath>C:\Unity\LogisticsVR\Library\ScriptAssemblies\Unity.XR.Interaction.Toolkit.Editor.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.XR.Interaction.Toolkit">
-        <HintPath>C:\Unity\LogisticsVR\Library\ScriptAssemblies\Unity.XR.Interaction.Toolkit.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
