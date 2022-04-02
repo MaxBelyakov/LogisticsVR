@@ -26,9 +26,12 @@ v.1.3:
 - Warehouse loading waypoints;
 - Pallet prefab.
 
-v.1.4:
+v.1.4 - 1.4.1:
 - Big truck moving;
 - Trailer moving with truck;
 - Forklift lift moving by shifter;
 - Player sit on moving objects;
-- Player sit inside forklift.
+- Player sit inside forklift;
+- Forklift driving by player;
+- Forklift moving back;
+- Setting for meta quest 2.
