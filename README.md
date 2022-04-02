@@ -25,3 +25,10 @@ v.1.3:
 - Warehouse truck loading manager (trucks distribution by waiting area, calling for loading);
 - Warehouse loading waypoints;
 - Pallet prefab.
+
+v.1.4:
+- Big truck moving;
+- Trailer moving with truck;
+- Forklift lift moving by shifter;
+- Player sit on moving objects;
+- Player sit inside forklift.
