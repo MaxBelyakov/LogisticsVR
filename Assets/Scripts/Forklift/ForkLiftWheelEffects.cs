@@ -42,31 +42,6 @@ namespace ForkLift
         }
 
 
-        public void EmitTyreSmoke()
-        {
-            skidParticles.transform.position = transform.position - transform.up*m_WheelCollider.radius;
-            skidParticles.Emit(1);
-            if (!skidding)
-            {
-                StartCoroutine(StartSkidTrail());
-            }
-        }
-
-
-        public void PlayAudio()
-        {
-            m_AudioSource.Play();
-            PlayingAudio = true;
-        }
-
-
-        public void StopAudio()
-        {
-            m_AudioSource.Stop();
-            PlayingAudio = false;
-        }
-
-
         public IEnumerator StartSkidTrail()
         {
             skidding = true;

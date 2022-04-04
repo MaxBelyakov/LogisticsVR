@@ -1,23 +1,58 @@
+using System;
 using UnityEngine;
+using UnityEngine.XR.Interaction.Toolkit;
 
 public class Forklift : MonoBehaviour
 {
     public GameObject shifter;      // Forklift shifter
     public GameObject lift;         // Forklift lift
 
-    [SerializeField] private float minShifterAngle = -90f;      // Min shifter rotation angle
-    [SerializeField] private float maxShifterAngle = -50f;      // Max shifter rotation angle
+    //private bool lifting;
 
-    void Update()
+    private HingeJoint hinge;
+
+    //angle threshold to trigger if we reached limit
+    public float angleBetweenThreshold = 1f;
+
+    private bool limit;
+
+    void Awake()
     {
-        // Get shifter current rotation
-        var rotation = shifter.transform.rotation.eulerAngles;
+        hinge = shifter.GetComponent<HingeJoint>();
+    }
 
-        // Correct the parametrs
-        rotation.x = (rotation.x > 180) ? rotation.x - 360 : rotation.x;
+    void FixedUpdate()
+    {
+        float angleWithMinLimit = Mathf.Abs(hinge.angle - hinge.limits.min);
+        float angleWithMaxLimit = Mathf.Abs(hinge.angle - hinge.limits.max);
 
-        // Get the rotation axis to move lift linery (calculated for minLiftHeigth = 0.636f, maxLiftHeigth = 2f)
-        var y = (-42.76f - 1.3639999999999999f * rotation.x) / 40f;
-        lift.transform.localPosition = new Vector3(lift.transform.localPosition.x, y, lift.transform.localPosition.z);
+        //Reached Max
+        if(angleWithMinLimit < angleBetweenThreshold)
+        {
+            if (!limit)
+                lift.transform.Translate(transform.up*1f*Time.deltaTime);
+                //lift.GetComponent<Rigidbody>().MovePosition(lift.GetComponent<Rigidbody>().position + transform.up*1f*Time.deltaTime);
+        }
+        //Reached Min
+        else if (angleWithMaxLimit < angleBetweenThreshold)
+        {
+            if (!limit)
+                lift.transform.Translate(transform.up*-1f*Time.deltaTime);
+                //lift.GetComponent<Rigidbody>().MovePosition(lift.GetComponent<Rigidbody>().position + transform.up*-1f*Time.deltaTime);
+        }
+        //No Limit reached
+        else
+            limit = false;
+
+        if (!limit && lift.transform.localPosition.y < 0.636f)
+        {
+            lift.transform.localPosition = new Vector3(lift.transform.localPosition.x, 0.636f, lift.transform.localPosition.z);
+            limit = true;
+        }
+        if (!limit && lift.transform.localPosition.y > 2f)
+        {
+            lift.transform.localPosition = new Vector3(lift.transform.localPosition.x, 2f, lift.transform.localPosition.z);
+            limit = true;
+        }
     }
 }

@@ -6,6 +6,7 @@ TagManager:
   tags:
   - small truck
   - loading cell
+  - big truck
   layers:
   - Default
   - TransparentFX
@@ -20,8 +21,8 @@ TagManager:
   - Forklift seat
   - Forklift shifter
   - Forklift rudder
-  - 
-  - 
+  - Forklift lift
+  - Forklift body
   - 
   - 
   - 

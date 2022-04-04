@@ -1,5 +1,6 @@
 // Forklift rudder rotation and movement
 
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
@@ -10,7 +11,6 @@ namespace ForkLift
     public class ForkLiftUserControl : MonoBehaviour
     {
         public GameObject rudder;
-        public List<GameObject> rudderElements;   // Forklift rudder
         public GameObject player;   // Player XR Rig
         public Transform seat;
 
@@ -21,38 +21,69 @@ namespace ForkLift
 
         private float accel;        // Acceleration multiplicator
 
-        [SerializeField] private float minRudderAngle = 40f;   // Min rudder rotation angle
-        [SerializeField] private float maxRudderAngle = 160f;    // Max rudder rotation angle
-
         private ForkLiftController m_Car; // the car controller we want to use
+
+        private HingeJoint hinge;
+
+        private float oldAngle;
+        private float h;
+        private bool limit;
+
+        private XRGrabInteractable rudderGrab;
 
         private void Awake()
         {
             // get the car controller
             m_Car = GetComponent<ForkLiftController>();
 
+            hinge = rudder.GetComponent<HingeJoint>();
+
+            rudderGrab = rudder.GetComponent<XRGrabInteractable>();
+            rudderGrab.selectEntered.AddListener(GetRudder);
+
+            oldAngle = hinge.angle;
+
             // No move
             accel = 0f;
-
-            // Connect to rudder grab script and set the listeners
-            for (int i = 0; i < rudderElements.Count; i++)
-            {
-                XRGrabInteractable rudderGrab = rudderElements[i].GetComponent<XRGrabInteractable>();
-                rudderGrab.selectEntered.AddListener(GetRudder);
-                rudderGrab.selectExited.AddListener(DropRudder);
-                rudderGrab.activated.AddListener(MoveForward);
-                rudderGrab.deactivated.AddListener(StopMoving);
-            }
         }
 
         private void GetRudder(SelectEnterEventArgs arg0)
         {
+            GameObject grab = new GameObject("Grab Pivot");
+            grab.transform.SetParent(rudder.transform, false);
+
+            grab.transform.position = arg0.interactorObject.transform.position;
+            grab.transform.rotation = arg0.interactableObject.transform.rotation;
+
+            FixedJoint joint = grab.AddComponent<FixedJoint>();
+            joint.connectedBody = rudder.GetComponent<Rigidbody>();
+            grab.GetComponent<Rigidbody>().useGravity = false;
+
+            XRGrabInteractable newGrab = grab.AddComponent<XRGrabInteractable>();
+            newGrab.movementType = XRBaseInteractable.MovementType.VelocityTracking;
+            newGrab.attachTransform = grab.transform;
+
+            newGrab.selectEntered.AddListener(GetRudderPivot);
+            newGrab.selectExited.AddListener(DropRudderPivot);
+            newGrab.activated.AddListener(MoveForward);
+            newGrab.deactivated.AddListener(StopMoving);
+            
+            
+            rudderGrab.interactionManager.SelectExit(arg0.interactorObject, arg0.interactableObject);
+            newGrab.interactionManager.SelectEnter(arg0.interactorObject, newGrab);
+        }
+
+        private void GetRudderPivot(SelectEnterEventArgs arg0)
+        {
             driving = true;
+
             player.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeAll;
         }
 
-        private void DropRudder(SelectExitEventArgs arg0)
+        private void DropRudderPivot(SelectExitEventArgs arg0)
         {
+            Destroy(arg0.interactableObject.transform.gameObject);
+
             driving = false;
             player.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None;
             player.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeRotation;
@@ -71,29 +102,42 @@ namespace ForkLift
 
         private void FixedUpdate()
         {
-
-           // print(player.transform.position + " / " + seat.position);
             if (driving)
             {
                 player.transform.position = seat.position;
-               //player.transform.rotation = seat.rotation;
 
                // Moving back
                 if (RightHandController)
                     if (CheckIfPressedBack(RightHandController))
-                        accel *= -1f;
+                        accel = -1f;
             }
 
-            // Get rudder current rotation
-            var rotation = rudder.transform.rotation.eulerAngles;
+            // Rudder rotation
+            if (Mathf.RoundToInt(hinge.angle) > Mathf.RoundToInt(oldAngle))
+            {
+                if (!limit)
+                    h += 0.05f;
+            }
+            else if (Mathf.RoundToInt(hinge.angle) < Mathf.RoundToInt(oldAngle))
+            {
+                if (!limit)
+                    h -= 0.05f;
+            }
+            else
+                limit = false;
 
-            if (rotation.z > 270f)
-                rudder.transform.eulerAngles = new Vector3(rotation.x, rotation.y, 270f);
-            if (rotation.z < 90f)
-                rudder.transform.eulerAngles = new Vector3(rotation.x, rotation.y, 90f);
+            oldAngle = hinge.angle;
 
-            // Get the rotation axis to turn the wheels linery
-            var h = (rotation.z / 90f) - 2f;
+            if (!limit && h < -1f)
+            {
+                h = -1f;
+                limit = true;
+            }
+            if (!limit && h > 1f)
+            {
+                h = 1f;
+                limit = true;
+            }
 
             // Turn the wheels and move
             m_Car.Move(h, accel, accel, 0f);
