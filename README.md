@@ -35,3 +35,9 @@ v.1.4 - 1.4.1:
 - Forklift driving by player;
 - Forklift moving back;
 - Setting for meta quest 2.
+
+v.1.5:
+- forklift change lift shifter logic (3 steps: up, cancel, down);
+- forklift change rudder logic (new grab interaction and new rotation for wheels);
+- forklift remove smoke;
+- setup project physics and time settings.
