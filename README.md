@@ -41,3 +41,8 @@ v.1.5:
 - forklift change rudder logic (new grab interaction and new rotation for wheels);
 - forklift remove smoke;
 - setup project physics and time settings.
+
+v.1.6:
+- fix: shifter don't work when forklift turning;
+- fix: grab parent objects with target (shifter, rudder);
+- fix: size of forklift.
