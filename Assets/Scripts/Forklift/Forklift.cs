@@ -2,56 +2,60 @@ using UnityEngine;
 
 public class Forklift : MonoBehaviour
 {
-    public GameObject shifter;      // Forklift shifter
-    public GameObject lift;         // Forklift lift
+    public GameObject shifter;                  // Forklift shifter
+    public GameObject lift;                     // Forklift lift
 
-    private HingeJoint hinge;
+    private float speed = 1f;                   // Lift speed
+    private float liftMaxHeight = 2f;           // Lift max height
+    private float liftMinHeight = 0.636f;       // Lift min height
 
-    //angle threshold to trigger if we reached limit
-    public float angleBetweenThreshold = 1f;
-    private float angleWithMinLimit;
-    private float angleWithMaxLimit;
+    private HingeJoint hinge;                   // Forklift hinge joint
 
-    private bool limit;
+    public float angleBetweenThreshold = 1f;    // Angle threshold to trigger if we reached limit
+    private float angleWithMinLimit;            // Min limit angle for shifter, depends on hinge limits
+    private float angleWithMaxLimit;            // Max limit angle for shifter, depends on hinge limits
+
+    private bool limit;                         // Flag reach the limit
 
     void Awake()
     {
         hinge = shifter.GetComponent<HingeJoint>();
+
+        // Calculate shifter limits
         angleWithMinLimit = shifter.transform.eulerAngles.x + hinge.limits.min;
         angleWithMaxLimit = shifter.transform.eulerAngles.x + hinge.limits.max;
     }
 
     void FixedUpdate()
     {
-        print(angleWithMinLimit + "/" + angleWithMaxLimit + "/" + shifter.transform.eulerAngles.x);
-        //Reached Max
+        // Reached Min
         if(shifter.transform.eulerAngles.x - angleWithMinLimit < angleBetweenThreshold)
         {
-            print("min");
+            // Moving lift if there is no limit
             if (!limit)
-                lift.transform.Translate(transform.up*1f*Time.deltaTime);
+                lift.transform.Translate(transform.up * speed * Time.deltaTime);
         }
-        //Reached Min
+        // Reached Max
         else if (angleWithMaxLimit - shifter.transform.eulerAngles.x < angleBetweenThreshold)
         {
-            print("max");
+            // Moving lift if there is no limit
             if (!limit)
-                lift.transform.Translate(transform.up*-1f*Time.deltaTime);
+                lift.transform.Translate(transform.up * -speed * Time.deltaTime);
         }
-        //No Limit reached
         else
+            // No Limit reached
             limit = false;
 
-        if (!limit && lift.transform.localPosition.y < 0.636f)
+        // Return minimum height to lift when exceeded limit
+        if (!limit && lift.transform.localPosition.y < liftMinHeight)
         {
-            print("limit min");
-            lift.transform.localPosition = new Vector3(lift.transform.localPosition.x, 0.636f, lift.transform.localPosition.z);
+            lift.transform.localPosition = new Vector3(lift.transform.localPosition.x, liftMinHeight, lift.transform.localPosition.z);
             limit = true;
         }
-        if (!limit && lift.transform.localPosition.y > 2f)
+        // Return maximum height to lift when exceeded limit
+        if (!limit && lift.transform.localPosition.y > liftMaxHeight)
         {
-            print("limit max");
-            lift.transform.localPosition = new Vector3(lift.transform.localPosition.x, 2f, lift.transform.localPosition.z);
+            lift.transform.localPosition = new Vector3(lift.transform.localPosition.x, liftMaxHeight, lift.transform.localPosition.z);
             limit = true;
         }
     }

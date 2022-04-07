@@ -1,18 +1,19 @@
 // Forklift rudder rotation and movement
 
-using System;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
 
 namespace ForkLift
 {
-    [RequireComponent(typeof (ForkLiftController))]
     public class ForkLiftUserControl : MonoBehaviour
     {
+        [SerializeField] private WheelCollider[] m_WheelColliders = new WheelCollider[4];
+        [SerializeField] private GameObject[] m_WheelMeshes = new GameObject[4];
+
         public GameObject rudder;
         public GameObject player;   // Player XR Rig
         public Transform seat;
+        private GameObject currentSeat;
 
         public XRController RightHandController;                  // Right hand ray
         public InputHelpers.Button backButton;        // Back button
@@ -20,8 +21,6 @@ namespace ForkLift
         private bool driving;
 
         private float accel;        // Acceleration multiplicator
-
-        private ForkLiftController m_Car; // the car controller we want to use
 
         private HingeJoint hinge;
 
@@ -33,9 +32,6 @@ namespace ForkLift
 
         private void Awake()
         {
-            // get the car controller
-            m_Car = GetComponent<ForkLiftController>();
-
             hinge = rudder.GetComponent<HingeJoint>();
 
             rudderGrab = rudder.GetComponent<XRGrabInteractable>();
@@ -77,6 +73,10 @@ namespace ForkLift
         {
             driving = true;
 
+            currentSeat = new GameObject("current seat");
+            currentSeat.transform.SetParent(seat, false);
+            currentSeat.transform.position = player.transform.position;
+
             player.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeAll;
         }
 
@@ -104,7 +104,8 @@ namespace ForkLift
         {
             if (driving)
             {
-                player.transform.position = seat.position;
+                player.transform.position = currentSeat.transform.position;
+                player.transform.rotation = seat.transform.rotation;
 
                // Moving back
                 if (RightHandController)
@@ -116,12 +117,12 @@ namespace ForkLift
             if (Mathf.RoundToInt(hinge.angle) > Mathf.RoundToInt(oldAngle))
             {
                 if (!limit)
-                    h += 0.05f;
+                    h += 0.01f;
             }
             else if (Mathf.RoundToInt(hinge.angle) < Mathf.RoundToInt(oldAngle))
             {
                 if (!limit)
-                    h -= 0.05f;
+                    h -= 0.01f;
             }
             else
                 limit = false;
@@ -140,7 +141,7 @@ namespace ForkLift
             }
 
             // Turn the wheels and move
-            m_Car.Move(h, accel, accel, 0f);
+            Move(h, accel, accel);
         }
 
         private bool CheckIfPressedBack(XRController controller)
@@ -148,6 +149,32 @@ namespace ForkLift
             // Listening for activation button press with activation threshold
             InputHelpers.IsPressed(controller.inputDevice, backButton, out bool isActivated, 0.1f);
             return isActivated;
+        }
+
+        public void Move(float steering, float accel, float footbrake)
+        {
+            //Set the steer on the front wheels.
+            //Assuming that wheels 0 and 1 are the front wheels.
+            float m_MaximumSteerAngle = 35f;
+            float m_SteerAngle = steering*m_MaximumSteerAngle;
+            m_WheelColliders[0].steerAngle = m_SteerAngle;
+            m_WheelColliders[1].steerAngle = m_SteerAngle;
+
+            for (int i = 0; i < 4; i++)
+            {
+                Quaternion quat;
+                Vector3 position;
+                m_WheelColliders[i].GetWorldPose(out position, out quat);
+                m_WheelMeshes[i].transform.position = position;
+                m_WheelMeshes[i].transform.rotation = quat;
+            }
+
+            for (int i = 0; i < 4; i++)
+            {
+                m_WheelColliders[i].motorTorque = accel * (50f);
+            }
+
+
         }
     }
 }

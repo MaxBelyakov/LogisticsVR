@@ -1,17 +1,21 @@
-namespace UnityEngine.XR.Interaction.Toolkit
+// Teleportation to forklift seat
+
+using UnityEngine.XR.Interaction.Toolkit;
+using UnityEngine;
+
+public class ForkliftSeat : TeleportationArea
 {
-    public class ForkliftSeat : TeleportationArea
+    public Transform seat;      // Forklift seat
+
+    // Standart teleport request
+    protected override bool GenerateTeleportRequest(IXRInteractor interactor, RaycastHit raycastHit, ref TeleportRequest teleportRequest)
     {
-        public Transform seat;
+        if (raycastHit.collider == null)
+            return false;
 
-        protected override bool GenerateTeleportRequest(IXRInteractor interactor, RaycastHit raycastHit, ref TeleportRequest teleportRequest)
-        {
-            if (raycastHit.collider == null)
-                return false;
-
-            teleportRequest.destinationPosition = seat.position;
-            teleportRequest.destinationRotation = seat.rotation;
-            return true;
-        }
+        // Set destination position and rotation
+        teleportRequest.destinationPosition = seat.position;
+        teleportRequest.destinationRotation.eulerAngles = seat.eulerAngles;
+        return true;
     }
 }
