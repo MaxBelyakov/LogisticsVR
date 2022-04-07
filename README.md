@@ -46,3 +46,9 @@ v.1.6:
 - fix: shifter don't work when forklift turning;
 - fix: grab parent objects with target (shifter, rudder);
 - fix: size of forklift.
+
+v.1.7:
+- forklift movement make easier;
+- remove forklift audio;
+- fix: player turn forward when teleport to forklift;
+- fix: player turning face while moving forklift.
