@@ -52,3 +52,13 @@ v.1.7:
 - remove forklift audio;
 - fix: player turn forward when teleport to forklift;
 - fix: player turning face while moving forklift.
+
+v.1.8:
+- forklift speed limit and fast start moving/stop moving;
+- trailer wheels moving;
+- truck moving to warehouse;
+- truck parking;
+- truck moving to exit;
+- new city design;
+- simplify small truck loading process;
+- fix: player inertia after forklift stop.
