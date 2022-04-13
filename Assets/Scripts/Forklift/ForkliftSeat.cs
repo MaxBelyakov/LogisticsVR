@@ -6,6 +6,8 @@ using UnityEngine;
 public class ForkliftSeat : TeleportationArea
 {
     public Transform seat;      // Forklift seat
+    public Transform playerCamera;
+    public Transform player;
 
     // Standart teleport request
     protected override bool GenerateTeleportRequest(IXRInteractor interactor, RaycastHit raycastHit, ref TeleportRequest teleportRequest)
@@ -15,7 +17,9 @@ public class ForkliftSeat : TeleportationArea
 
         // Set destination position and rotation
         teleportRequest.destinationPosition = seat.position;
-        teleportRequest.destinationRotation.eulerAngles = seat.eulerAngles;
+        //teleportRequest.destinationRotation = seat.rotation;
+        //float angle = Vector3.Angle(player.transform.forward, playerCamera.forward);
+        //playerCamera.RotateAround(new Vector3(player.transform.position.x, 0, player.transform.position.z), Vector3.up, angle);
         return true;
     }
 }

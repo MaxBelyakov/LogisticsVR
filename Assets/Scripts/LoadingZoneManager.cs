@@ -48,51 +48,6 @@ public class LoadingZoneManager : MonoBehaviour
         else
             if (cells[0].GetComponent<LoadingCell>().readyForLoading == null)
                 cells[0].GetComponent<LoadingCell>().status = true;
-
-        if (cells[5].GetComponent<LoadingCell>().status == false)
-        {
-            cells[4].GetComponent<LoadingCell>().status = false;
-            cells[3].GetComponent<LoadingCell>().status = false;
-        }
-        else
-            if (cells[4].GetComponent<LoadingCell>().readyForLoading == null)
-                cells[4].GetComponent<LoadingCell>().status = true;
-
-        if (cells[4].GetComponent<LoadingCell>().status == false)
-            cells[3].GetComponent<LoadingCell>().status = false;
-        else
-            if (cells[3].GetComponent<LoadingCell>().readyForLoading == null)
-                cells[3].GetComponent<LoadingCell>().status = true;
-
-        if (cells[8].GetComponent<LoadingCell>().status == false)
-        {
-            cells[7].GetComponent<LoadingCell>().status = false;
-            cells[6].GetComponent<LoadingCell>().status = false;
-        }
-        else
-            if (cells[7].GetComponent<LoadingCell>().readyForLoading == null)
-                cells[7].GetComponent<LoadingCell>().status = true;
-
-        if (cells[7].GetComponent<LoadingCell>().status == false)
-            cells[6].GetComponent<LoadingCell>().status = false;
-        else
-            if (cells[6].GetComponent<LoadingCell>().readyForLoading == null)
-                cells[6].GetComponent<LoadingCell>().status = true;
-
-        if (cells[11].GetComponent<LoadingCell>().status == false)
-        {
-            cells[10].GetComponent<LoadingCell>().status = false;
-            cells[9].GetComponent<LoadingCell>().status = false;
-        }
-        else
-            if (cells[10].GetComponent<LoadingCell>().readyForLoading == null)
-                cells[10].GetComponent<LoadingCell>().status = true;
-
-        if (cells[10].GetComponent<LoadingCell>().status == false)
-            cells[9].GetComponent<LoadingCell>().status = false;
-        else
-            if (cells[9].GetComponent<LoadingCell>().readyForLoading == null)
-                cells[9].GetComponent<LoadingCell>().status = true;
     }
 
     // Truck collide with loading manager. Manager select empty cell

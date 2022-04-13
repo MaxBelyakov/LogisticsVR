@@ -138,6 +138,19 @@ namespace Trucks
                 m_WheelMeshes[i].transform.rotation = quat;
             }
 
+            // Trailer wheels rotation
+            if (GetComponent<Truck>().trailer != null)
+            {
+                for (int i = 0; i < 3; i++)
+                {
+                    Quaternion quat;
+                    Vector3 position;
+                    GetComponent<Truck>().t_WheelColliders[i].GetWorldPose(out position, out quat);
+                    GetComponent<Truck>().t_WheelMeshes[i].transform.position = position;
+                    GetComponent<Truck>().t_WheelMeshes[i].transform.rotation = quat;
+                }
+            }
+
             //clamp input values
             steering = Mathf.Clamp(steering, -1, 1);
             AccelInput = accel = Mathf.Clamp(accel, 0, 1);

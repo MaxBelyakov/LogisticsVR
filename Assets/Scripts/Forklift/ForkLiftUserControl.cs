@@ -1,6 +1,8 @@
 // Forklift rudder rotation and movement
 
 using UnityEngine;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine.XR.Interaction.Toolkit;
 
 namespace ForkLift
@@ -10,8 +12,11 @@ namespace ForkLift
         [SerializeField] private WheelCollider[] m_WheelColliders = new WheelCollider[4];
         [SerializeField] private GameObject[] m_WheelMeshes = new GameObject[4];
 
+        public GameObject forklift;
         public GameObject rudder;
+        public List<GameObject> rudderPoints;
         public GameObject player;   // Player XR Rig
+        public Transform playerCamera;
         public Transform seat;
         private GameObject currentSeat;
 
@@ -19,8 +24,12 @@ namespace ForkLift
         public InputHelpers.Button backButton;        // Back button
 
         private bool driving;
+        private bool moveBackFlag;
+
+        private bool inertia;
 
         private float accel;        // Acceleration multiplicator
+        private float footbrake;
 
         private HingeJoint hinge;
 
@@ -41,22 +50,24 @@ namespace ForkLift
 
             // No move
             accel = 0f;
+            footbrake = 0f;
         }
 
         private void GetRudder(SelectEnterEventArgs arg0)
         {
             GameObject grab = new GameObject("Grab Pivot");
-            grab.transform.SetParent(rudder.transform, false);
+            grab.transform.SetParent(rudder.transform.parent, false);
 
             grab.transform.position = arg0.interactorObject.transform.position;
-            grab.transform.rotation = arg0.interactableObject.transform.rotation;
+            grab.transform.eulerAngles = new Vector3(arg0.interactableObject.transform.eulerAngles.x + 180f, arg0.interactableObject.transform.eulerAngles.y, arg0.interactableObject.transform.eulerAngles.z);
 
             FixedJoint joint = grab.AddComponent<FixedJoint>();
             joint.connectedBody = rudder.GetComponent<Rigidbody>();
             grab.GetComponent<Rigidbody>().useGravity = false;
 
-            XRGrabInteractable newGrab = grab.AddComponent<XRGrabInteractable>();
+            XRGrabInteractable newGrab = grab.AddComponent<test>();
             newGrab.movementType = XRBaseInteractable.MovementType.VelocityTracking;
+            newGrab.GetComponent<test>().rud = rudder;
             newGrab.attachTransform = grab.transform;
 
             newGrab.selectEntered.AddListener(GetRudderPivot);
@@ -84,33 +95,54 @@ namespace ForkLift
         {
             Destroy(arg0.interactableObject.transform.gameObject);
 
-            driving = false;
-            player.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None;
-            player.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeRotation;
             accel = 0f;
+            footbrake = 1f;
+            moveBackFlag = false;
+
+            driving = false;
+
+            StartCoroutine(WaitForPlayerInertia());
         }
 
         private void MoveForward(ActivateEventArgs arg0)
         {
             accel = 1f;
+            footbrake = 0f;
         }
 
         private void StopMoving(DeactivateEventArgs arg0)
         {
             accel = 0f;
+            footbrake = 1f;
+        }
+
+        private void MoveBack()
+        {
+            accel = -1f;
+            footbrake = 0f;
+            moveBackFlag = true;
+        }
+
+        private void StopMoveBack()
+        {
+            accel = 0f;
+            footbrake = 1f;
+            moveBackFlag = false;
         }
 
         private void FixedUpdate()
         {
-            if (driving)
+            if (driving || inertia)
             {
                 player.transform.position = currentSeat.transform.position;
                 player.transform.rotation = seat.transform.rotation;
 
                // Moving back
                 if (RightHandController)
-                    if (CheckIfPressedBack(RightHandController))
-                        accel = -1f;
+                    if (CheckIfPressedBack(RightHandController) && !inertia)
+                        MoveBack();
+                    else if (moveBackFlag)
+                        StopMoveBack();
             }
 
             // Rudder rotation
@@ -141,7 +173,7 @@ namespace ForkLift
             }
 
             // Turn the wheels and move
-            Move(h, accel, accel);
+            Move(h, accel, footbrake);
         }
 
         private bool CheckIfPressedBack(XRController controller)
@@ -171,10 +203,26 @@ namespace ForkLift
 
             for (int i = 0; i < 4; i++)
             {
-                m_WheelColliders[i].motorTorque = accel * (50f);
+                m_WheelColliders[i].motorTorque = accel * 4000f;
+                m_WheelColliders[i].brakeTorque = footbrake * 100000f;
             }
 
+            Rigidbody rb = forklift.GetComponent<Rigidbody>();
+            float topSpeed = 0.5f;
+            float speed = rb.velocity.magnitude;
 
+            if (speed > topSpeed)
+                rb.velocity = topSpeed * rb.velocity.normalized;
+        }
+
+        private IEnumerator WaitForPlayerInertia()
+        {
+            inertia = true;
+            yield return new WaitForSeconds(1f);
+
+            player.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None;
+            player.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeRotation;
+            inertia = false;
         }
     }
 }
