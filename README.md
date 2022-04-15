@@ -62,3 +62,11 @@ v.1.8:
 - new city design;
 - simplify small truck loading process;
 - fix: player inertia after forklift stop.
+
+v.1.9:
+- truck calling button;
+- truck finish loading triggers (closed doors and empty trailer);
+- truck doors opening;
+- interaction with the boxes;
+- complects of cargo (4 different sizes);
+- cargo inside the trailer.
