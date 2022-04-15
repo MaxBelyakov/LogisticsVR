@@ -7,6 +7,7 @@ TagManager:
   - small truck
   - loading cell
   - big truck
+  - box
   layers:
   - Default
   - TransparentFX
@@ -30,9 +31,9 @@ TagManager:
   - 
   - Warehouse body
   - 
+  - Truck body
   - 
-  - 
-  - 
+  - Box
   - 
   - 
   - 

@@ -11,8 +11,15 @@ public class Truck : MonoBehaviour
     public WheelCollider[] t_WheelColliders = new WheelCollider[3];         // Trailer wheel colliders
     public GameObject[] t_WheelMeshes = new GameObject[3];                  // Trailer wheels meshes
 
+    public Transform leftDoor;                                              // Trailer left door
+    public Transform rightDoor;                                             // Trailer right door
+
+    public Transform trailerCargoCollider;                                  // Trailer cargo collider (use for box cast scan)
+    public Transform cargo;                                                 // Cargo slot inside the trailer
+
     public bool loadingEnter;               // Flag to start moving to loading zone
     private bool parking;                   // Flag to start parking
+    private bool parked;                    // Flag truck is parked
     public bool loadingExit;                // Flag to leave loading zone
 
     private bool getTarget;                 // Flag shows that truck has a current target
@@ -41,6 +48,21 @@ public class Truck : MonoBehaviour
         if (loadingExit && !getTarget)
             MoveToExitZone();
         
+        // Listening when truck will be ready to finish loading
+        if (parked)
+        {
+            // Threshold angle for each door
+            float doorsThreshold = 5f;
+
+            // Check is the doors closed
+            if (leftDoor.eulerAngles.y - doorsThreshold <= 180f && rightDoor.eulerAngles.y + doorsThreshold >= 180f)
+            {
+                // Check is the trailer empty from boxes and start exit process
+                if (CheckTrailerCargo())
+                    StartCoroutine(WaiterExitLoadingZone());
+            }
+        }
+        
         // Check for target
         if (GetTarget(parking))
         {
@@ -57,8 +79,23 @@ public class Truck : MonoBehaviour
             // Rotate truck
             transform.eulerAngles = new Vector3(0f, 180f, 0f);
 
-            // For testing. FIXME. Add finish loading triggers
-            StartCoroutine(WaiterExitLoadingZone());
+            // Unfreeze truck head (Fix: unfreeze separate from trailer to avoid moving back)
+            transform.GetComponent<Rigidbody>().isKinematic = false;
+
+            // Unfreeze doors
+            leftDoor.GetComponent<Rigidbody>().isKinematic = false;
+            rightDoor.GetComponent<Rigidbody>().isKinematic = false;
+
+            // Unfreeze and unparent cargo
+            Rigidbody[] items = cargo.GetComponentsInChildren<Rigidbody>();
+            foreach (Rigidbody item in items)
+            {
+                item.isKinematic = false;
+            }
+            cargo.DetachChildren();
+
+            // Set parked flag
+            parked = true;
         }
         else if (GetTarget(loadingEnter) || GetTarget(loadingExit))
             i++;
@@ -168,14 +205,17 @@ public class Truck : MonoBehaviour
     // For testing. FIXME. Add finish loading triggers
     IEnumerator WaiterExitLoadingZone()
     {
-        yield return new WaitForSeconds(3f);
+        yield return new WaitForSeconds(2f);
+
+        // Freeze doors
+        leftDoor.GetComponent<Rigidbody>().isKinematic = true;
+        rightDoor.GetComponent<Rigidbody>().isKinematic = true;
 
         // Enable joint
         trailer.transform.GetComponent<HingeJoint>().connectedBody = transform.GetComponent<Rigidbody>();
         trailer.transform.GetComponent<HingeJoint>().useSpring = true;
 
-        // Unfreeze truck and trailer
-        transform.GetComponent<Rigidbody>().isKinematic = false;
+        // Unfreeze trailer
         trailer.transform.GetComponent<Rigidbody>().isKinematic = false;
 
         // Send exit waypoints to truck
@@ -205,5 +245,24 @@ public class Truck : MonoBehaviour
     {
         yield return new WaitForSeconds(0.1f);
         GetComponent<TruckAIControl>().moveBack = false;
+    }
+
+    // Inspect trailer cargo slot. Looking for boxes inside trailer.
+    private bool CheckTrailerCargo()
+    {
+        // Trailer lenght
+        float trailerLenght = 14f;
+
+        // Use box cast to expand ray of search
+        RaycastHit[] targets = Physics.BoxCastAll(trailerCargoCollider.position, trailerCargoCollider.lossyScale, trailerCargoCollider.forward, trailerCargoCollider.rotation, trailerLenght);
+        if (targets.Length != 0)
+        {
+            foreach (var target in targets)
+            {
+                if (target.transform.tag == "box")
+                    return false;
+            }
+        }
+        return true;
     }
 }

@@ -39,6 +39,12 @@ namespace ForkLift
 
         private XRGrabInteractable rudderGrab;
 
+        public Transform leftHand;
+        public Transform rightHand;
+
+        private Quaternion leftHandRotation;
+        private Quaternion rightHandRotation;
+
         private void Awake()
         {
             hinge = rudder.GetComponent<HingeJoint>();
@@ -65,9 +71,9 @@ namespace ForkLift
             joint.connectedBody = rudder.GetComponent<Rigidbody>();
             grab.GetComponent<Rigidbody>().useGravity = false;
 
-            XRGrabInteractable newGrab = grab.AddComponent<test>();
+            XRGrabInteractable newGrab = grab.AddComponent<XRGrabInteractable>();
             newGrab.movementType = XRBaseInteractable.MovementType.VelocityTracking;
-            newGrab.GetComponent<test>().rud = rudder;
+            //newGrab.GetComponent<test>().rud = rudder;
             newGrab.attachTransform = grab.transform;
 
             newGrab.selectEntered.AddListener(GetRudderPivot);
@@ -87,6 +93,9 @@ namespace ForkLift
             currentSeat = new GameObject("current seat");
             currentSeat.transform.SetParent(seat, false);
             currentSeat.transform.position = player.transform.position;
+
+            leftHandRotation = leftHand.rotation;
+            rightHandRotation = rightHand.rotation;
 
             player.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeAll;
         }
@@ -137,7 +146,10 @@ namespace ForkLift
                 player.transform.position = currentSeat.transform.position;
                 player.transform.rotation = seat.transform.rotation;
 
-               // Moving back
+                leftHand.rotation = rudder.transform.rotation;
+                leftHand.rotation = rudder.transform.rotation;
+
+                // Moving back
                 if (RightHandController)
                     if (CheckIfPressedBack(RightHandController) && !inertia)
                         MoveBack();
