@@ -70,3 +70,17 @@ v.1.9:
 - interaction with the boxes;
 - complects of cargo (4 different sizes);
 - cargo inside the trailer.
+
+v.2.0:
+- small truck city delivery route;
+- small truck parking to warehouse;
+- small truck finish loading triggers (limit boxes in cargo slot);
+- small truck controller script optmization;
+- player moving inside trailer;
+- forklift moving inside warehouse;
+- fix: forklift body colliders;
+- fix: forklift shaking;
+- fix: floor level in warehouse;
+- fix: player body interaction matrix with objects;
+- fix: truck stucks on border;
+- fix: trucks accelerates when parked.
