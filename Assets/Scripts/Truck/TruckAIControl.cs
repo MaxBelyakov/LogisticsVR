@@ -84,7 +84,7 @@ namespace Trucks
             {
                 // Car should not be moving,
                 // use handbrake to stop
-                m_CarController.Move(0, 0, -1f, 1f);
+                m_CarController.Move(0, 0, 0f, 1f);
             }
             else
             {

@@ -6,7 +6,8 @@ using System.Collections.Generic;
 public class LoadingCell : MonoBehaviour
 {
     public bool status;                             // Cell busy or free
-    public GameObject readyForLoading;              // Truck gameobject connected to the Cell
+    public GameObject waitingTruck;                 // Truck gameobject that is waiting by the cell 
+    public GameObject readyForLoading;              // Truck gameobject connected to the Cell 
 
     public Material freeMaterial;                   // For testing
     public Material busyMaterial;                   // For testing
@@ -27,5 +28,12 @@ public class LoadingCell : MonoBehaviour
             GetComponent<MeshRenderer>().material = freeMaterial;
         else
             GetComponent<MeshRenderer>().material = busyMaterial;
+    }
+
+    void OnTriggerEnter(Collider collider)
+    {
+        // Check for waiting truck
+        if (collider.transform.parent.parent.gameObject == waitingTruck)
+            readyForLoading = waitingTruck;
     }
 }

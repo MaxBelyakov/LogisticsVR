@@ -8,6 +8,7 @@ TagManager:
   - loading cell
   - big truck
   - box
+  - pallet
   layers:
   - Default
   - TransparentFX
@@ -19,12 +20,12 @@ TagManager:
   - Player body
   - 
   - Teleportation Area
-  - Forklift seat
+  - 
   - Forklift shifter
   - Forklift rudder
   - Forklift lift
   - Forklift body
-  - Forklift wheels
+  - 
   - 
   - Trailer doors
   - Trailer body

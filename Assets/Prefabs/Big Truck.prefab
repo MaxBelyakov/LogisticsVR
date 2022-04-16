@@ -1950,7 +1950,7 @@ WheelCollider:
     spring: 35000
     damper: 4500
     targetPosition: 0.1
-  m_SuspensionDistance: 0.1
+  m_SuspensionDistance: 0.2
   m_ForceAppPointDistance: 0
   m_Mass: 20
   m_WheelDampingRate: 0.25
@@ -7780,7 +7780,7 @@ WheelCollider:
     spring: 35000
     damper: 4500
     targetPosition: 0.1
-  m_SuspensionDistance: 0.1
+  m_SuspensionDistance: 0.2
   m_ForceAppPointDistance: 0
   m_Mass: 20
   m_WheelDampingRate: 0.25
@@ -7842,7 +7842,7 @@ WheelCollider:
     spring: 35000
     damper: 4500
     targetPosition: 0.1
-  m_SuspensionDistance: 0.1
+  m_SuspensionDistance: 0.2
   m_ForceAppPointDistance: 0
   m_Mass: 20
   m_WheelDampingRate: 0.25
@@ -9155,7 +9155,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5207262674253524210}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0.232, z: 0}
   m_LocalScale: {x: 0.6249997, y: 0.625, z: 0.6249997}
   m_ConstrainProportionsScale: 0
   m_Children:

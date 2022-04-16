@@ -79,7 +79,7 @@ public class Truck : MonoBehaviour
             // Rotate truck
             transform.eulerAngles = new Vector3(0f, 180f, 0f);
 
-            // Unfreeze truck head (Fix: unfreeze separate from trailer to avoid moving back)
+            // Unfreeze truck head
             transform.GetComponent<Rigidbody>().isKinematic = false;
 
             // Unfreeze doors
