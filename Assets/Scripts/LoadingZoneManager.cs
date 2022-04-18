@@ -34,23 +34,6 @@ public class LoadingZoneManager : MonoBehaviour
                 }
             }
         }
-
-        // Block cells if previous cell in line is busy
-        // Unblock cells if previous cell in line become free
-        /*if (cells[2].GetComponent<LoadingCell>().status == false)
-        {
-            cells[1].GetComponent<LoadingCell>().status = false;
-            cells[0].GetComponent<LoadingCell>().status = false;
-        }
-        else
-            if (cells[1].GetComponent<LoadingCell>().readyForLoading == null)
-                cells[1].GetComponent<LoadingCell>().status = true;
-
-        if (cells[1].GetComponent<LoadingCell>().status == false)
-            cells[0].GetComponent<LoadingCell>().status = false;
-        else
-            if (cells[0].GetComponent<LoadingCell>().readyForLoading == null)
-                cells[0].GetComponent<LoadingCell>().status = true;*/
     }
 
     // Truck collide with loading manager. Manager select empty cell
@@ -59,9 +42,6 @@ public class LoadingZoneManager : MonoBehaviour
         // Check for truck tag
         if (collider.transform.tag == "small truck")
         {
-            // Stop driving
-            collider.GetComponentInParent<UnityStandardAssets.Vehicles.Car.CarAIControl>().m_Driving = false;
-
             // Check for empty cell
             for (var i = 0; i < cells.Count; i++)
             {

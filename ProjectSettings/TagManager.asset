@@ -9,6 +9,7 @@ TagManager:
   - big truck
   - box
   - pallet
+  - forklift
   layers:
   - Default
   - TransparentFX

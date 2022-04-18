@@ -13,12 +13,17 @@ public class SmallTruckController : MonoBehaviour
     public bool parking;                    // Flag to start moving to warehouse parking point
     private bool parked;                    // Flag truck is parked
     public bool loaded;                     // Flag truck is loaded
+    private bool unloading;                 // Flag truck unloading
+    private bool goToManager;               // Flag truck finish work and need to start again
 
-    public List<GameObject> deliveryPoints; // The way from manager zone to the cell
+    public List<GameObject> deliveryPoints;     // The way from manager zone to the cell
+    public List<GameObject> unloadingPoints;    // Points where truck unload boxes
 
     public Transform truckCargoScan;        // Truck cargo collider (use for box cast scan)
     
-    private int truckCargoLimit = 1;        // Limit amount of boxes in one truck
+    private float truckLenght = 5f;         // Lenght of small truck cargo slot
+    private int truckCargoLimit = 9;        // Limit amount of boxes in one truck
+    private int cargoToUnload = 3;          // Limit amount of boxes to unload for each point
 
     private bool getTarget;                 // Flag shows that truck has a current target
 
@@ -39,10 +44,6 @@ public class SmallTruckController : MonoBehaviour
         // Listening to start moving to warehouse parking zone
         if (parking && !getTarget)
             MoveToParkingZone();
-
-        // Listening to start delivery
-        if (loaded && !getTarget)
-            Delivery();
       
         // Listening when truck will be ready to finish loading
         if (parked)
@@ -51,6 +52,14 @@ public class SmallTruckController : MonoBehaviour
             if (CheckTruckCargo())
                 StartCoroutine(WaitForExitLoadingZone());
         }
+
+        // Listening to start delivery
+        if (loaded && !getTarget)
+            Delivery();
+
+        // Listening to start search loading manager
+        if (goToManager && !getTarget)
+            SearchLoadingManager();            
         
         // Check for target
         if (GetTarget(parking))
@@ -77,12 +86,44 @@ public class SmallTruckController : MonoBehaviour
         }
         else if (GetTarget(loaded))
         {
-            i++;
+            // Change flags
+            loaded = false;
+            getTarget = true;
 
-            // FIXME: Add there box removing
+            // Check current point for unloading point
+            foreach (var point in unloadingPoints)
+            {
+                if (GetComponent<CarAIControl>().m_Target.gameObject == point)
+                {
+                    StartCoroutine(Unloading());
+                    break;
+                }
+            }
+
+            // Return to delivery if there is not unloading point
+            if (!unloading)
+            {
+                // Change flag and get next point
+                loaded = true;
+                getTarget = false;
+                i++;
+            }
+        }
+        else if (GetTarget(goToManager))
+        {
+            // Stop moving
+            GetComponent<CarAIControl>().m_Driving = false;
+
+            // Change flags
+            goToManager = false;
+            getTarget = false;
         }
         else if (GetTarget(cellEnter) || GetTarget(loadingEnter))
+        {
+            // Flag to start search next waypoint
+            getTarget = false;
             i++;
+        }
     }
 
     // Move to WAITING ZONE
@@ -178,7 +219,61 @@ public class SmallTruckController : MonoBehaviour
             // Reset counter and change flag
             i = 0;
             loaded = false;
+            getTarget = false;
+            goToManager = true;
         }
+    }
+
+    // Unloading process
+    IEnumerator Unloading()
+    {
+        unloading = true;
+
+        // Stop moving
+        GetComponent<CarAIControl>().m_Driving = false;
+
+        yield return new WaitForSeconds(3f);
+
+        // Use box cast to expand ray of search inside truck cargo slot
+        RaycastHit[] targets = Physics.BoxCastAll(truckCargoScan.position, truckCargoScan.lossyScale, truckCargoScan.forward, truckCargoScan.rotation, truckLenght);
+        
+        int k = 1;
+
+        if (targets.Length != 0)
+        {
+            // Check all items inside truck cargo slot
+            foreach (var target in targets)
+            {
+                // Remove box each circle but not more than unload limit
+                if (target.transform.tag == "box" && k <= cargoToUnload)
+                {
+                    Destroy(target.transform.gameObject);
+                    k++;
+                }
+            }
+        }
+
+        yield return new WaitForSeconds(1f);
+
+        // Change flag and get next point
+        unloading = false;
+        loaded = true;
+        getTarget = false;
+        i++;
+
+        // Truck start moving
+        TruckStartMoving(true);
+    }
+
+    // Go to Loading manager
+    void SearchLoadingManager()
+    {
+        // Select loading manager as truck target
+        GetComponent<CarAIControl>().m_Target = FindObjectOfType<LoadingZoneManager>().transform;
+        getTarget = true;
+
+        // Truck start moving
+        TruckStartMoving(true);
     }
 
     // Check for get target
@@ -189,11 +284,7 @@ public class SmallTruckController : MonoBehaviour
         
         // Listening for waypoint target
         if  (checker && getTarget && localTarget.magnitude < 2f)
-        {
-            // Flag to start search next waypoint
-            getTarget = false;
             return true;
-        }
         return false;
     }
 
@@ -226,7 +317,7 @@ public class SmallTruckController : MonoBehaviour
         parked = false;
         loaded = true;
 
-        yield return new WaitForSeconds(3f);
+        yield return new WaitForSeconds(6f);
 
         // Finish truck loading process, send flag to loading manager to start search next truck for loading
         FindObjectOfType<LoadingZoneManager>().loading = false;
@@ -235,9 +326,6 @@ public class SmallTruckController : MonoBehaviour
     // Inspect truck cargo slot. Looking for boxes inside.
     private bool CheckTruckCargo()
     {
-        // Truck lenght
-        float truckLenght = 5f;
-
         // Reset box counter
         int n = 0;
 
@@ -247,6 +335,10 @@ public class SmallTruckController : MonoBehaviour
         {
             foreach (var target in targets)
             {
+                // Fix: Check for "Forklift lift" layer. Forklift can load the truck, so don't move while it happends 
+                if (target.transform.gameObject.layer == 13)
+                    break;
+
                 // Add box to counter
                 if (target.transform.tag == "box")
                     n++;
