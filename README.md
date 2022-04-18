@@ -84,3 +84,10 @@ v.2.0:
 - fix: player body interaction matrix with objects;
 - fix: truck stucks on border;
 - fix: trucks accelerates when parked.
+
+v.2.1:
+- small track return to loading manager after delivery;
+- small truck unload boxes at local points;
+- add 3 small trucks;
+- each truck moving to waiting zone, loading zone, parking, delivery;
+- fix: small truck loaded check for forklift.
