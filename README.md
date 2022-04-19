@@ -91,3 +91,8 @@ v.2.1:
 - add 3 small trucks;
 - each truck moving to waiting zone, loading zone, parking, delivery;
 - fix: small truck loaded check for forklift.
+
+v.2.2:
+- police car moving;
+- police car enter warehouse zone and arrest all trucks;
+- police car leave warehouse zone.
