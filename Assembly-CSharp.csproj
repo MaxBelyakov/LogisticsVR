@@ -114,7 +114,7 @@
      <Compile Include="Assets\Scripts\Truck\TruckWheelEffects.cs" />
      <Compile Include="Assets\Oculus\Avatar\Samples\GripPoses\Scripts\PoseEditHelper.cs" />
      <Compile Include="Assets\Oculus\SampleFramework\Core\Locomotion\Scripts\TeleportTargetHandlerNavMesh.cs" />
-     <Compile Include="Assets\Scripts\TruckExitZone.cs" />
+     <Compile Include="Assets\Scripts\ExitZone.cs" />
      <Compile Include="Assets\Oculus\Avatar\Scripts\OvrAvatarTouchController.cs" />
      <Compile Include="Assets\Oculus\SampleFramework\Usage\HandsTrainExample\Scripts\ControllerBoxController.cs" />
      <Compile Include="Assets\Oculus\SampleFramework\Usage\AppDeeplink\UI\CustomDebugUI.cs" />
@@ -215,9 +215,9 @@
      <Compile Include="Assets\Oculus\SampleFramework\Usage\Passthrough\Scripts\SelectivePassthroughExperience.cs" />
      <Compile Include="Assets\Oculus\Avatar\Samples\SocialStarter\Assets\Scripts\PlayerController.cs" />
      <Compile Include="Assets\Oculus\SampleFramework\Usage\HandsTrainExample\Scripts\TrackSegment.cs" />
-     <Compile Include="Assets\Scripts\Forklift\PalletParenter.cs" />
-     <Compile Include="Assets\Scripts\Forklift\BoxParenter.cs" />
-     <Compile Include="Assets\testtest.cs" />
+     <Compile Include="Assets\Scripts\Police\PoliceAIControl.cs" />
+     <Compile Include="Assets\Scripts\Police\PoliceController.cs" />
+     <Compile Include="Assets\Scripts\Police\PoliceCar.cs" />
      <None Include="Assets\Oculus\SampleFramework\Usage\HandsTrainExample\Shaders\XingLightShader.shader" />
      <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />
      <None Include="Assets\Oculus\Avatar\Resources\Materials\AvatarMaterialStateShader.cginc" />

@@ -10,6 +10,8 @@ TagManager:
   - box
   - pallet
   - forklift
+  - police car
+  - loading zone manager
   layers:
   - Default
   - TransparentFX

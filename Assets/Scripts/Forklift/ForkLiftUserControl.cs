@@ -223,8 +223,6 @@ namespace ForkLift
             float topSpeed = 0.5f;
             float speed = rb.velocity.magnitude;
 
-            //rb.MovePosition(transform.position + accel * transform.forward * Time.deltaTime);
-
             if (speed > topSpeed)
                 rb.velocity = topSpeed * rb.velocity.normalized;
         }

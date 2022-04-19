@@ -9,6 +9,7 @@ public class LoadingZoneManager : MonoBehaviour
     public List<GameObject> cells;              // Waiting cells
 
     public bool loading;                        // Flag shows that any truck start moving to loading zone
+    public bool arrested;                        // Flag police car arested trucks
 
     public GameObject parkingPoint;             // Warehouse parking point
     public GameObject exit;                     // For testing
@@ -16,7 +17,7 @@ public class LoadingZoneManager : MonoBehaviour
     void Update()
     {
         // Check for waiting trucks get ready to load when no moving in loading zone
-        if (!loading)
+        if (!loading && !arrested)
         {
             // Check all waiting cells
             for (var i = 0; i < cells.Count; i++)

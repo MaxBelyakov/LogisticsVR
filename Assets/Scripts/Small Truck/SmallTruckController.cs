@@ -335,9 +335,12 @@ public class SmallTruckController : MonoBehaviour
         {
             foreach (var target in targets)
             {
-                // Fix: Check for "Forklift lift" layer. Forklift can load the truck, so don't move while it happends 
-                if (target.transform.gameObject.layer == 13)
+                // Fix: forklift can load the truck, so don't move while it happends 
+                if (target.transform.tag == "forklift")
+                {
+                    n = 0;
                     break;
+                }
 
                 // Add box to counter
                 if (target.transform.tag == "box")

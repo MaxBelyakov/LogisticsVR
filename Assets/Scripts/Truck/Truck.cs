@@ -175,6 +175,10 @@ public class Truck : MonoBehaviour
     // Check for get target
     bool GetTarget(bool checker)
     {
+        // Ignore when there is no target
+        if (!getTarget)
+            return false;
+
         // Calculate the local-relative position of the target
         var localTarget = transform.InverseTransformPoint(GetComponent<TruckAIControl>().m_Target.position);
         

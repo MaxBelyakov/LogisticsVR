@@ -10,21 +10,37 @@ public class LoadingZoneManager2 : MonoBehaviour
     public List<Transform> exitWaypoints;       // Exit from loading zone waypoints
     public GameObject parkingPoint;             // Warehouse parking point
 
+    private bool truckStart;                    // Flag shows truck start searching waypoints (enought just 1 trigger)
+    private Collider waitArrested;               // Save triggered collider if in moment of trigger police arrest warehouse
+
+    void FixedUpdate()
+    {
+        // Check the case if police arrested warehouse, get saved collider
+        if (waitArrested != null)
+            if (!GameObject.FindGameObjectWithTag("loading zone manager").GetComponent<LoadingZoneManager>().arrested)
+                StartCoroutine(LoadingManagerWaiter(waitArrested));
+    }
+
     // Truck collide with loading manager. Manager check loading zone
     void OnTriggerEnter(Collider collider)
     {
         // Check for truck tag and loading Enter flag (to collide just once)
         if (collider.transform.tag == "big truck" && !collider.GetComponentInParent<Truck>().loadingEnter)
         {
-            // Check truck going to unload cargo
-            if (collider.GetComponentInParent<Truck>().haveCargo)
+            // Check truck going to unload cargo and police not arrested warehouse
+            if (!truckStart && collider.GetComponentInParent<Truck>().haveCargo
+            && !GameObject.FindGameObjectWithTag("loading zone manager").GetComponent<LoadingZoneManager>().arrested)
             {
-                // Stop driving
-                collider.GetComponentInParent<Trucks.TruckAIControl>().m_Driving = false;
+                // Truck start searching waypoints
+                truckStart = true;
 
-                // FIXME. Wait for empty loading zone
+                // Wait for loading zone ready
                 StartCoroutine(LoadingManagerWaiter(collider));
             }
+
+            // Save trigger collider if police arrested warehouse
+            if (GameObject.FindGameObjectWithTag("loading zone manager").GetComponent<LoadingZoneManager>().arrested)
+                waitArrested = collider;
         }
     }
 

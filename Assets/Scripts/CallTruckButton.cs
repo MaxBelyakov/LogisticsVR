@@ -66,7 +66,6 @@ public class CallTruckButton : MonoBehaviour
         light2.color = Color.red;
 
         GameObject newTruck = Instantiate(truckPrefab, truckRespawn.position, truckRespawn.rotation);
-        newTruck.GetComponent<Trucks.TruckAIControl>().m_Target = truckTarget;
     }
 
     private void Released()
