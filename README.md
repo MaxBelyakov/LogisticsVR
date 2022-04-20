@@ -96,3 +96,7 @@ v.2.2:
 - police car moving;
 - police car enter warehouse zone and arrest all trucks;
 - police car leave warehouse zone.
+
+v.2.3:
+- police car lights and sounds;
+- player give box to police to avoide warehouse arrest.
