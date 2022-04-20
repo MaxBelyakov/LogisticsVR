@@ -20,6 +20,8 @@ public class PoliceCar : MonoBehaviour
 
     private int i = 0;                          // Waypoints counter
 
+    public List<Light> lights;                  // All police lights
+
     void Awake()
     {
         // FIXME: for testing
@@ -35,10 +37,13 @@ public class PoliceCar : MonoBehaviour
         // Listening when police car is waiting
         if (policeWaiting)
         {
-            // FIXME: Turn on lights, freeze trucks, listen for box
             // At first need to arrest all trucks
             if (!waitForBox)
             {
+                // Turn on lights
+                transform.GetComponent<Animator>().enabled = true;
+                transform.GetComponent<AudioSource>().enabled = true;
+
                 GameObject.FindGameObjectWithTag("loading zone manager").GetComponent<LoadingZoneManager>().arrested = true;
                 waitForBox = true;
             }
@@ -145,7 +150,13 @@ public class PoliceCar : MonoBehaviour
     {
         yield return new WaitForSeconds(1f);
 
-        // FIXME: Turn off lights
+        // Turn off lights
+        transform.GetComponent<Animator>().enabled = false;
+        transform.GetComponent<AudioSource>().enabled = false;
+        foreach (var light in lights)
+        {
+            light.enabled = false;
+        }
 
         yield return new WaitForSeconds(2f);
 
@@ -154,5 +165,18 @@ public class PoliceCar : MonoBehaviour
 
         // Cancel warehouse arrest
         GameObject.FindGameObjectWithTag("loading zone manager").GetComponent<LoadingZoneManager>().arrested = false;
+    }
+
+    // Waiting for box
+    void OnTriggerEnter(Collider collider)
+    {
+        // Check for police arrested warehouse and player give police car a box
+        if (GameObject.FindGameObjectWithTag("loading zone manager").GetComponent<LoadingZoneManager>().arrested
+        && collider.transform.parent.tag == "box")
+        {
+            // Take a box
+            Destroy(collider.transform.parent.gameObject);
+            getBox = true;
+        }
     }
 }
