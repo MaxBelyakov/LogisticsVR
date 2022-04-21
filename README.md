@@ -100,3 +100,9 @@ v.2.2:
 v.2.3:
 - police car lights and sounds;
 - player give box to police to avoide warehouse arrest.
+
+v.2.3.1:
+- fix: increase boxes stability;
+- fix: small truck moving without boxes when forklift take pallet with boxes;
+- fix: small truck start parking while other truck in parking zone;
+- improve city design.
