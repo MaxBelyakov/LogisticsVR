@@ -1,5 +1,4 @@
 // Small truck controller
-// There are 3 listeners: waiting zone - loading zone - parking zone
 
 using System.Collections.Generic;
 using System.Collections;
@@ -89,6 +88,10 @@ public class SmallTruckController : MonoBehaviour
             // Change flags
             loaded = false;
             getTarget = true;
+
+            // Finish truck loading process, send flag to loading manager to start search next truck for loading
+            if (i == 0)
+                FindObjectOfType<LoadingZoneManager>().loading = false;
 
             // Check current point for unloading point
             foreach (var point in unloadingPoints)
@@ -316,11 +319,6 @@ public class SmallTruckController : MonoBehaviour
         // Change flags
         parked = false;
         loaded = true;
-
-        yield return new WaitForSeconds(6f);
-
-        // Finish truck loading process, send flag to loading manager to start search next truck for loading
-        FindObjectOfType<LoadingZoneManager>().loading = false;
     }
 
     // Inspect truck cargo slot. Looking for boxes inside.
