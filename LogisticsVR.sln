@@ -21,6 +21,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VoiceSDK.Runtime", "VoiceSD
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AssistantCoreSDKRuntime", "AssistantCoreSDKRuntime.csproj", "{6092711b-254c-3cce-23ca-432083db27dc}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Runtime", "Runtime.csproj", "{20be79d0-8b96-539a-3ba7-dae6adef0655}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Oculus.LipSync", "Oculus.LipSync.csproj", "{d63c31d2-4c9e-d599-8fed-13401f245cf2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Oculus.Interaction.Editor", "Oculus.Interaction.Editor.csproj", "{b985b637-2e2f-152d-de3b-052317d9ba1b}"
@@ -74,6 +76,8 @@ Global
 		{7fd4d052-c8ef-1e53-0201-5bbe955ddd5c}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6092711b-254c-3cce-23ca-432083db27dc}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{6092711b-254c-3cce-23ca-432083db27dc}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{20be79d0-8b96-539a-3ba7-dae6adef0655}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{20be79d0-8b96-539a-3ba7-dae6adef0655}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{d63c31d2-4c9e-d599-8fed-13401f245cf2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{d63c31d2-4c9e-d599-8fed-13401f245cf2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{b985b637-2e2f-152d-de3b-052317d9ba1b}.Debug|Any CPU.ActiveCfg = Debug|Any CPU

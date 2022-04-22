@@ -20,11 +20,10 @@ namespace ForkLift
         public Transform seat;
         private GameObject currentSeat;
 
-        public XRController RightHandController;                  // Right hand ray
+        public ActionBasedController controller;
         public InputHelpers.Button backButton;        // Back button
 
         private bool driving;
-        private bool moveBackFlag;
 
         private bool inertia;
 
@@ -45,8 +44,13 @@ namespace ForkLift
         private Quaternion leftHandRotation;
         private Quaternion rightHandRotation;
 
+        private MonoBehaviour snapTurn;
+
         private void Awake()
         {
+            // Disable player snap turn
+            snapTurn = GameObject.FindGameObjectWithTag("Player").GetComponent<ActionBasedSnapTurnProvider>();
+
             hinge = rudder.GetComponent<HingeJoint>();
 
             rudderGrab = rudder.GetComponent<XRGrabInteractable>();
@@ -77,10 +81,7 @@ namespace ForkLift
             newGrab.attachTransform = grab.transform;
 
             newGrab.selectEntered.AddListener(GetRudderPivot);
-            newGrab.selectExited.AddListener(DropRudderPivot);
-            newGrab.activated.AddListener(MoveForward);
-            newGrab.deactivated.AddListener(StopMoving);
-            
+            newGrab.selectExited.AddListener(DropRudderPivot);            
             
             rudderGrab.interactionManager.SelectExit(arg0.interactorObject, arg0.interactableObject);
             newGrab.interactionManager.SelectEnter(arg0.interactorObject, newGrab);
@@ -89,6 +90,8 @@ namespace ForkLift
         private void GetRudderPivot(SelectEnterEventArgs arg0)
         {
             driving = true;
+
+            controller = arg0.interactorObject.transform.GetComponent<ActionBasedController>();
 
             currentSeat = new GameObject("current seat");
             currentSeat.transform.SetParent(seat, false);
@@ -106,37 +109,10 @@ namespace ForkLift
 
             accel = 0f;
             footbrake = 1f;
-            moveBackFlag = false;
 
             driving = false;
 
             StartCoroutine(WaitForPlayerInertia());
-        }
-
-        private void MoveForward(ActivateEventArgs arg0)
-        {
-            accel = 1f;
-            footbrake = 0f;
-        }
-
-        private void StopMoving(DeactivateEventArgs arg0)
-        {
-            accel = 0f;
-            footbrake = 1f;
-        }
-
-        private void MoveBack()
-        {
-            accel = -1f;
-            footbrake = 0f;
-            moveBackFlag = true;
-        }
-
-        private void StopMoveBack()
-        {
-            accel = 0f;
-            footbrake = 1f;
-            moveBackFlag = false;
         }
 
         private void FixedUpdate()
@@ -147,15 +123,21 @@ namespace ForkLift
                 player.transform.rotation = seat.transform.rotation;
 
                 leftHand.rotation = rudder.transform.rotation;
-                leftHand.rotation = rudder.transform.rotation;
 
-                // Moving back
-                if (RightHandController)
-                    if (CheckIfPressedBack(RightHandController) && !inertia)
-                        MoveBack();
-                    else if (moveBackFlag)
-                        StopMoveBack();
+                // Disable player snap turn
+                snapTurn.enabled = false;
+
+                // Get acceleration
+                if (controller && !inertia)
+                    accel = controller.translateAnchorAction.action.ReadValue<Vector2>().y;
+                    if (accel != 0)
+                        footbrake = 0f;
+                    else
+                        footbrake = 1f;
             }
+            else if (snapTurn.enabled == false)
+                // Enable player snap turn
+                snapTurn.enabled = true;
 
             // Rudder rotation
             if (Mathf.RoundToInt(hinge.angle) > Mathf.RoundToInt(oldAngle))
@@ -186,13 +168,6 @@ namespace ForkLift
 
             // Turn the wheels and move
             Move(h, accel, footbrake);
-        }
-
-        private bool CheckIfPressedBack(XRController controller)
-        {
-            // Listening for activation button press with activation threshold
-            InputHelpers.IsPressed(controller.inputDevice, backButton, out bool isActivated, 0.1f);
-            return isActivated;
         }
 
         public void Move(float steering, float accel, float footbrake)

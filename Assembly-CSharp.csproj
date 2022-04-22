@@ -218,6 +218,7 @@
      <Compile Include="Assets\Oculus\SampleFramework\Usage\Passthrough\Scripts\SelectivePassthroughExperience.cs" />
      <Compile Include="Assets\Oculus\Avatar\Samples\SocialStarter\Assets\Scripts\PlayerController.cs" />
      <Compile Include="Assets\Oculus\SampleFramework\Usage\HandsTrainExample\Scripts\TrackSegment.cs" />
+     <Compile Include="Assets\Scripts\XRDirectInteractorEdited.cs" />
      <None Include="Assets\Oculus\SampleFramework\Usage\HandsTrainExample\Shaders\XingLightShader.shader" />
      <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />
      <None Include="Assets\Oculus\Avatar\Resources\Materials\AvatarMaterialStateShader.cginc" />
@@ -1042,6 +1043,10 @@
       <Project>{7d5d6c13-2712-63ba-f9c9-c6f15231d1c1}</Project>
       <Name>Oculus.Interaction</Name>
     </ProjectReference>
+    <ProjectReference Include="Oculus.Platform.Editor.csproj">
+      <Project>{40592d70-b9a7-fea4-a888-86fca97a60ec}</Project>
+      <Name>Oculus.Platform.Editor</Name>
+    </ProjectReference>
     <ProjectReference Include="AssistantCoreSDKRuntime.csproj">
       <Project>{6092711b-254c-3cce-23ca-432083db27dc}</Project>
       <Name>AssistantCoreSDKRuntime</Name>
@@ -1074,6 +1079,10 @@
       <Project>{d7f10140-9547-0539-0eff-45878106f00a}</Project>
       <Name>Oculus.VR.Editor</Name>
     </ProjectReference>
+    <ProjectReference Include="Oculus.Platform.csproj">
+      <Project>{e01e13f1-db97-263b-923a-c387bcc403ab}</Project>
+      <Name>Oculus.Platform</Name>
+    </ProjectReference>
     <ProjectReference Include="Oculus.Interaction.Editor.csproj">
       <Project>{b985b637-2e2f-152d-de3b-052317d9ba1b}</Project>
       <Name>Oculus.Interaction.Editor</Name>
@@ -1097,14 +1106,6 @@
     <ProjectReference Include="Facebook.Wit.Editor.csproj">
       <Project>{7d6c5720-bbe7-fdea-9cc8-b73e6151f76d}</Project>
       <Name>Facebook.Wit.Editor</Name>
-    </ProjectReference>
-    <ProjectReference Include="Oculus.Platform.csproj">
-      <Project>{e01e13f1-db97-263b-923a-c387bcc403ab}</Project>
-      <Name>Oculus.Platform</Name>
-    </ProjectReference>
-    <ProjectReference Include="Oculus.Platform.Editor.csproj">
-      <Project>{40592d70-b9a7-fea4-a888-86fca97a60ec}</Project>
-      <Name>Oculus.Platform.Editor</Name>
     </ProjectReference>
     <ProjectReference Include="Oculus.LipSync.Editor.csproj">
       <Project>{c3205466-7862-a75b-a9ec-7cb66f0c86d1}</Project>
