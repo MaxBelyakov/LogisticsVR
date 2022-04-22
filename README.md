@@ -106,3 +106,13 @@ v.2.3.1:
 - fix: small truck moving without boxes when forklift take pallet with boxes;
 - fix: small truck start parking while other truck in parking zone;
 - improve city design.
+
+v.2.3.2:
+- update oculus integration sdk (not used);
+- new moving controller for forklift (by axis button);
+- each hand can control forklift;
+- fix: press button by physical hand;
+- fix: hands move player when touch the wall;
+- fix: teleport ray hit the player;
+- fix: boxes can move heavy objects;
+- fix: pallet is very big.
