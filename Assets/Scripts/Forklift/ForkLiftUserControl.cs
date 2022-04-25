@@ -9,127 +9,108 @@ namespace ForkLift
 {
     public class ForkLiftUserControl : MonoBehaviour
     {
-        [SerializeField] private WheelCollider[] m_WheelColliders = new WheelCollider[4];
-        [SerializeField] private GameObject[] m_WheelMeshes = new GameObject[4];
+        [SerializeField] private WheelCollider[] m_WheelColliders = new WheelCollider[4];           // Wheel colliders
+        [SerializeField] private GameObject[] m_WheelMeshes = new GameObject[4];                    // Wheel meshes
 
-        public GameObject forklift;
-        public GameObject rudder;
-        public List<GameObject> rudderPoints;
-        public GameObject player;   // Player XR Rig
-        public Transform playerCamera;
-        public Transform seat;
-        private GameObject currentSeat;
+        public GameObject forklift;                     // Forklift
+        public GameObject rudder;                       // Rudder
+        public List<GameObject> rudderPoints;           // Rudder attach points
+        public GameObject player;                       // Player XR Rig
+        public Transform seat;                          // Forklift seat position
+        private GameObject currentSeat;                 // Player in XR can move after seat, need to save position when get rudder
 
-        public ActionBasedController controller;
-        public InputHelpers.Button backButton;        // Back button
+        private ActionBasedController controller;       // Controller that get rudder
+        private HingeJoint hinge;                       // Rudder joint
 
-        private bool driving;
+        private MonoBehaviour snapTurn;                 // Snap Turn script (need to switch on/off)
 
-        private bool inertia;
+        private float m_MaximumSteerAngle = 35f;        // Maximum wheels rotation angle
+        private float topSpeed = 0.5f;                  // Forklift maximum speed
 
-        private float accel;        // Acceleration multiplicator
-        private float footbrake;
+        private bool driving;                           // Flag that forklift is driving by player
+        private bool inertia;                           // Flag show inertia when forklift stop 
 
-        private HingeJoint hinge;
+        private float accel;                            // Acceleration value
+        private float footbrake;                        // Brake value
+        public Vector3 m_CentreOfMassOffset;            // Decentralization center of mass
 
-        private float oldAngle;
-        private float h;
-        private bool limit;
-
-        private XRGrabInteractable rudderGrab;
-
-        public Transform leftHand;
-        public Transform rightHand;
-
-        private Quaternion leftHandRotation;
-        private Quaternion rightHandRotation;
-
-        private MonoBehaviour snapTurn;
+        private float oldAngle;                         // Save rudder angle variable
+        private float h;                                // Save rudder angle counter
+        private bool limit;                             // Flag shows that wheels in limit position
 
         private void Awake()
         {
-            // Disable player snap turn
+            // Get Snap Turn Script
             snapTurn = GameObject.FindGameObjectWithTag("Player").GetComponent<ActionBasedSnapTurnProvider>();
 
+            // Get rudder hinge joint
             hinge = rudder.GetComponent<HingeJoint>();
 
-            rudderGrab = rudder.GetComponent<XRGrabInteractable>();
-            rudderGrab.selectEntered.AddListener(GetRudder);
+            // Add listeners for each rudder attach point
+            foreach (var point in rudderPoints)
+            {
+                XRGrabInteractable rudderGrab = point.GetComponent<XRGrabInteractable>();
+                rudderGrab.selectEntered.AddListener(GetRudder);
+                rudderGrab.selectExited.AddListener(DropRudder);
+            }
 
+            // Save rudder hinge angle
             oldAngle = hinge.angle;
 
             // No move
             accel = 0f;
             footbrake = 0f;
+
+            // Set offset center of mass (to avoid forklift spring when get cargo)
+            m_WheelColliders[0].attachedRigidbody.centerOfMass = m_CentreOfMassOffset;
         }
 
+        // Listener. Get Rudder
         private void GetRudder(SelectEnterEventArgs arg0)
         {
-            GameObject grab = new GameObject("Grab Pivot");
-            grab.transform.SetParent(rudder.transform.parent, false);
-
-            grab.transform.position = arg0.interactorObject.transform.position;
-            grab.transform.eulerAngles = new Vector3(arg0.interactableObject.transform.eulerAngles.x + 180f, arg0.interactableObject.transform.eulerAngles.y, arg0.interactableObject.transform.eulerAngles.z);
-
-            FixedJoint joint = grab.AddComponent<FixedJoint>();
-            joint.connectedBody = rudder.GetComponent<Rigidbody>();
-            grab.GetComponent<Rigidbody>().useGravity = false;
-
-            XRGrabInteractable newGrab = grab.AddComponent<XRGrabInteractable>();
-            newGrab.movementType = XRBaseInteractable.MovementType.VelocityTracking;
-            //newGrab.GetComponent<test>().rud = rudder;
-            newGrab.attachTransform = grab.transform;
-
-            newGrab.selectEntered.AddListener(GetRudderPivot);
-            newGrab.selectExited.AddListener(DropRudderPivot);            
-            
-            rudderGrab.interactionManager.SelectExit(arg0.interactorObject, arg0.interactableObject);
-            newGrab.interactionManager.SelectEnter(arg0.interactorObject, newGrab);
-        }
-
-        private void GetRudderPivot(SelectEnterEventArgs arg0)
-        {
+            // Start driving
             driving = true;
 
+            // Get controller
             controller = arg0.interactorObject.transform.GetComponent<ActionBasedController>();
 
+            // Create new seat position to freeze player there. 
+            // Player in XR can move after seat, need to save position when get rudder
             currentSeat = new GameObject("current seat");
             currentSeat.transform.SetParent(seat, false);
             currentSeat.transform.position = player.transform.position;
-
-            leftHandRotation = leftHand.rotation;
-            rightHandRotation = rightHand.rotation;
-
-            player.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeAll;
         }
 
-        private void DropRudderPivot(SelectExitEventArgs arg0)
+        // Listener. Drop rudder
+        private void DropRudder(SelectExitEventArgs arg0)
         {
-            Destroy(arg0.interactableObject.transform.gameObject);
-
+            // Stop forklift
             accel = 0f;
             footbrake = 1f;
 
+            // Stop driving
             driving = false;
 
+            // Wait for inertia
             StartCoroutine(WaitForPlayerInertia());
         }
 
         private void FixedUpdate()
         {
+            // Driving forklift
             if (driving || inertia)
             {
+                // Hold player on saved seat position
                 player.transform.position = currentSeat.transform.position;
-                player.transform.rotation = seat.transform.rotation;
-
-                leftHand.rotation = rudder.transform.rotation;
 
                 // Disable player snap turn
                 snapTurn.enabled = false;
 
-                // Get acceleration
+                // Get acceleration by reading controller button value
                 if (controller && !inertia)
                     accel = controller.translateAnchorAction.action.ReadValue<Vector2>().y;
+
+                    // Stop when no acceleration
                     if (accel != 0)
                         footbrake = 0f;
                     else
@@ -139,7 +120,7 @@ namespace ForkLift
                 // Enable player snap turn
                 snapTurn.enabled = true;
 
-            // Rudder rotation
+            // Rotate wheels with rudder by compare old and new rudder angle
             if (Mathf.RoundToInt(hinge.angle) > Mathf.RoundToInt(oldAngle))
             {
                 if (!limit)
@@ -153,8 +134,10 @@ namespace ForkLift
             else
                 limit = false;
 
+            // Renew old rudder angle
             oldAngle = hinge.angle;
 
+            // Looking for limit angle
             if (!limit && h < -1f)
             {
                 h = -1f;
@@ -170,15 +153,16 @@ namespace ForkLift
             Move(h, accel, footbrake);
         }
 
+        // Forklft moving
         public void Move(float steering, float accel, float footbrake)
         {
-            //Set the steer on the front wheels.
-            //Assuming that wheels 0 and 1 are the front wheels.
-            float m_MaximumSteerAngle = 35f;
-            float m_SteerAngle = steering*m_MaximumSteerAngle;
+            // Set the steer on the front wheels.
+            // Assuming that wheels 0 and 1 are the front wheels.
+            float m_SteerAngle = steering * m_MaximumSteerAngle;
             m_WheelColliders[0].steerAngle = m_SteerAngle;
             m_WheelColliders[1].steerAngle = m_SteerAngle;
 
+            // Move and rotate wheels meshes
             for (int i = 0; i < 4; i++)
             {
                 Quaternion quat;
@@ -188,27 +172,31 @@ namespace ForkLift
                 m_WheelMeshes[i].transform.rotation = quat;
             }
 
+            // Add force to wheels
             for (int i = 0; i < 4; i++)
             {
                 m_WheelColliders[i].motorTorque = accel * 4000f;
                 m_WheelColliders[i].brakeTorque = footbrake * 100000f;
             }
 
+            // Get current forklift speed
             Rigidbody rb = forklift.GetComponent<Rigidbody>();
-            float topSpeed = 0.5f;
             float speed = rb.velocity.magnitude;
 
+            // Set limit speed
             if (speed > topSpeed)
                 rb.velocity = topSpeed * rb.velocity.normalized;
         }
 
+        // Wait for forklift inertia after break
         private IEnumerator WaitForPlayerInertia()
         {
             inertia = true;
-            yield return new WaitForSeconds(1f);
+            yield return new WaitForSeconds(0.3f);
 
+            // Cancel holding player
             player.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None;
-            player.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeRotation;
+
             inertia = false;
         }
     }

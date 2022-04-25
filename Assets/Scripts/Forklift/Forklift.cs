@@ -5,7 +5,7 @@ public class Forklift : MonoBehaviour
     public GameObject shifter;                  // Forklift shifter
     public GameObject lift;                     // Forklift lift
 
-    private float speed = 1f;                   // Lift speed
+    private float speed = 0.5f;                   // Lift speed
     private float liftMaxHeight = 2f;           // Lift max height
     private float liftMinHeight = 0.636f;       // Lift min height
 

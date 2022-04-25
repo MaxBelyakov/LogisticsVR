@@ -107,7 +107,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2960543584341518906}
   - component: {fileID: 2960543584341518901}
-  - component: {fileID: 2960543584341518900}
+  - component: {fileID: 6354131800138161848}
   m_Layer: 24
   m_Name: Box_4
   m_TagString: box
@@ -139,15 +139,15 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2960543584341518903}
   serializedVersion: 2
-  m_Mass: 10
+  m_Mass: 0.1
   m_Drag: 1
   m_AngularDrag: 1
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
-  m_CollisionDetection: 2
---- !u!114 &2960543584341518900
+  m_CollisionDetection: 1
+--- !u!114 &6354131800138161848
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -156,7 +156,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 2960543584341518903}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0ad34abafad169848a38072baa96cdb2, type: 3}
+  m_Script: {fileID: 11500000, guid: 2af54f5719dc2fe4fa2ee178629a25ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_InteractionManager: {fileID: 0}
