@@ -116,3 +116,12 @@ v.2.3.2:
 - fix: teleport ray hit the player;
 - fix: boxes can move heavy objects;
 - fix: pallet is very big.
+
+v.2.4:
+- fix: forklift rudder rotation;
+- fix: forklift get rudder player rotation;
+- fix: forklift decrease lift speed;
+- fix: big truck doors correct grabbing;
+- fix: cargo decrease size;
+- fix: boxes weight and parametrs;
+- fix: boxes rotates when grabbed.
