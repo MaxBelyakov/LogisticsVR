@@ -125,3 +125,11 @@ v.2.4:
 - fix: cargo decrease size;
 - fix: boxes weight and parametrs;
 - fix: boxes rotates when grabbed.
+
+v.2.4.1:
+- fix: boxes can turn small truck;
+- fix: check all trucks routes, a lot of stucks;
+- fix: small truck get stuck behavior;
+- fix: big truck checkpoint movement;
+- fix: big truck call button call only 1 time;
+- fix: increase pallet height.
