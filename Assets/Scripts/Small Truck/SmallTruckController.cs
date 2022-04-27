@@ -77,9 +77,6 @@ public class SmallTruckController : MonoBehaviour
             // Rotate truck
             transform.eulerAngles = new Vector3(0f, 180f, 0f);
 
-            // Unfreeze truck
-            transform.GetComponent<Rigidbody>().isKinematic = false;
-
             // Set parked flag
             parked = true;
         }
@@ -177,16 +174,8 @@ public class SmallTruckController : MonoBehaviour
             // Stop in last waypoint
             GetComponent<CarAIControl>().m_Driving = false;
 
-            // Disconnect truck from the cell and change cell status to empty
-            targetCell.GetComponent<LoadingCell>().readyForLoading = null;
-            targetCell.GetComponent<LoadingCell>().status = true;
-
-            // Reset counter and change flag
-            i = 0;
-            loadingEnter = false;
-
             // Start parking to warehouse
-            parking = true;
+            StartCoroutine(WaitForParking());
         }
     }
 
@@ -314,11 +303,31 @@ public class SmallTruckController : MonoBehaviour
     // Waiting a little to start move to exit
     IEnumerator WaitForExitLoadingZone()
     {
-        yield return new WaitForSeconds(3f);
+        yield return new WaitForSeconds(2f);
 
         // Change flags
         parked = false;
         loaded = true;
+
+        yield return new WaitForSeconds(2f);
+
+        // Unfreeze truck
+        transform.GetComponent<Rigidbody>().isKinematic = false;
+    }
+
+    // Waiting for start parking
+    IEnumerator WaitForParking()
+    {
+        yield return new WaitForSeconds(2f);
+
+        // Disconnect truck from the cell and change cell status to empty
+        targetCell.GetComponent<LoadingCell>().readyForLoading = null;
+        targetCell.GetComponent<LoadingCell>().status = true;
+
+        // Reset counter and change flag
+        i = 0;
+        loadingEnter = false;
+        parking = true;
     }
 
     // Inspect truck cargo slot. Looking for boxes inside.

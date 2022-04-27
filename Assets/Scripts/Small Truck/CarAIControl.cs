@@ -48,9 +48,7 @@ namespace UnityStandardAssets.Vehicles.Car
         private Rigidbody m_Rigidbody;
 
         // Car "get stuck" variables
-        private float t_pos_x;                      // Saved x position
-        private float t_pos_z;                      // Saved z position
-        private bool get_stuck;                     // Car get stuck
+        public bool get_stuck;                     // Car get stuck
         private bool get_back;                      // Car moving back
         private int get_back_direction;             // Random back direction
 
@@ -82,9 +80,8 @@ namespace UnityStandardAssets.Vehicles.Car
 
             if (m_Target == null || !m_Driving)
             {
-                // Car should not be moving,
-                // use handbrake to stop
-                m_CarController.Move(0, 0, 0f, 1f);
+                // Car should not be moving, use handbrake to stop
+                m_CarController.Move(0, 0, 0, 1f);
             }
             else
             {
@@ -195,11 +192,15 @@ namespace UnityStandardAssets.Vehicles.Car
 
                 // get the amount of steering needed to aim the car towards the target
                 float steer = Mathf.Clamp(targetAngle*m_SteerSensitivity, -1, 1)*Mathf.Sign(m_CarController.CurrentSpeed);
-
+               
                 // Car can get stuck, check it
-                if (!startTimer && !get_back && !moveBack && m_Rigidbody.velocity.magnitude < 0.1f) 
+                if (!startTimer && !get_back && !moveBack && !get_stuck
+                && m_Rigidbody.velocity.magnitude < 0.001f && m_Rigidbody.velocity.magnitude > 0)
                 {
                     get_stuck = true;
+
+                    // Car should not be moving, use handbrake to stop
+                    m_CarController.Move(0, 0, 0, 1f);
 
                     // Set get back direction by random
                     get_back_direction = Random.Range(-1, 1);
@@ -212,6 +213,7 @@ namespace UnityStandardAssets.Vehicles.Car
                 {
                     accel = accel * -1;
                     steer = steer + 10f * get_back_direction;
+
                     if (!get_back)
                         StartCoroutine(GetBack());
                 }
@@ -231,7 +233,7 @@ namespace UnityStandardAssets.Vehicles.Car
         IEnumerator StartTimer() {
             startMoving = false;
             startTimer = true;
-            yield return new WaitForSeconds(2f);
+            yield return new WaitForSeconds(3f);
             startTimer = false;
         }
 
@@ -246,6 +248,9 @@ namespace UnityStandardAssets.Vehicles.Car
 
             get_back = false;
             get_stuck = false;
+
+            // Car should not be moving, use handbrake to stop
+            m_CarController.Move(0, 0, 0, 1f);
 
             // Give time to increase speed
             startMoving = true;

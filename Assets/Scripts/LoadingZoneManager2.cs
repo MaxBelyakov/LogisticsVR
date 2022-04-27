@@ -10,7 +10,6 @@ public class LoadingZoneManager2 : MonoBehaviour
     public List<Transform> exitWaypoints;       // Exit from loading zone waypoints
     public GameObject parkingPoint;             // Warehouse parking point
 
-    private bool truckStart;                    // Flag shows truck start searching waypoints (enought just 1 trigger)
     private Collider waitArrested;               // Save triggered collider if in moment of trigger police arrest warehouse
 
     void FixedUpdate()
@@ -28,15 +27,10 @@ public class LoadingZoneManager2 : MonoBehaviour
         if (collider.transform.tag == "big truck" && !collider.GetComponentInParent<Truck>().loadingEnter)
         {
             // Check truck going to unload cargo and police not arrested warehouse
-            if (!truckStart && collider.GetComponentInParent<Truck>().haveCargo
+            if (collider.GetComponentInParent<Truck>().haveCargo
             && !GameObject.FindGameObjectWithTag("loading zone manager").GetComponent<LoadingZoneManager>().arrested)
-            {
-                // Truck start searching waypoints
-                truckStart = true;
-
                 // Wait for loading zone ready
                 StartCoroutine(LoadingManagerWaiter(collider));
-            }
 
             // Save trigger collider if police arrested warehouse
             if (GameObject.FindGameObjectWithTag("loading zone manager").GetComponent<LoadingZoneManager>().arrested)

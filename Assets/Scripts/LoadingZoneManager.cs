@@ -57,21 +57,12 @@ public class LoadingZoneManager : MonoBehaviour
                     // Mark the cell as busy
                     cells[i].GetComponent<LoadingCell>().status = false;
 
-                    // Wait before start moving to the target cell
-                    StartCoroutine(LoadingManagerWaiter(collider));
+                    // Send request to truck move to the target cell
+                    collider.GetComponentInParent<SmallTruckController>().cellEnter = true;
 
                     break;
                 }
             }
         }
-    }
-
-    // Wait before start moving to the target cell
-    IEnumerator LoadingManagerWaiter(Collider collider)
-    {
-        yield return new WaitForSeconds(1f);
-
-        // Send request to truck move to the target cell
-        collider.GetComponentInParent<SmallTruckController>().cellEnter = true;
     }
 }

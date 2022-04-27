@@ -29,7 +29,6 @@ namespace UnityStandardAssets.Vehicles.Car
         [Range(0, 1)] [SerializeField] private float m_TractionControl; // 0 is no traction control, 1 is full interference
         [SerializeField] private float m_FullTorqueOverAllWheels;
         [SerializeField] private float m_ReverseTorque;
-        [SerializeField] private float m_MaxHandbrakeTorque;
         [SerializeField] private float m_Downforce = 100f;
         [SerializeField] private SpeedType m_SpeedType;
         [SerializeField] private float m_Topspeed = 200;
@@ -65,8 +64,6 @@ namespace UnityStandardAssets.Vehicles.Car
                 m_WheelMeshLocalRotations[i] = m_WheelMeshes[i].transform.localRotation;
             }
             m_WheelColliders[0].attachedRigidbody.centerOfMass = m_CentreOfMassOffset;
-
-            m_MaxHandbrakeTorque = float.MaxValue;
 
             m_Rigidbody = GetComponent<Rigidbody>();
             m_CurrentTorque = m_FullTorqueOverAllWheels - (m_TractionControl*m_FullTorqueOverAllWheels);
@@ -154,15 +151,11 @@ namespace UnityStandardAssets.Vehicles.Car
             ApplyDrive(accel, footbrake);
             CapSpeed();
 
-            //Set the handbrake.
-            //Assuming that wheels 2 and 3 are the rear wheels.
+            //Set the handbrake
             if (handbrake > 0f)
-            {
-                var hbTorque = handbrake*m_MaxHandbrakeTorque;
-                m_WheelColliders[2].brakeTorque = hbTorque;
-                m_WheelColliders[3].brakeTorque = hbTorque;
-            }
-
+                m_Rigidbody.drag = 5;
+            else if (m_Rigidbody.drag != 0)
+                m_Rigidbody.drag = 0;
 
             CalculateRevs();
             GearChanging();
@@ -176,12 +169,17 @@ namespace UnityStandardAssets.Vehicles.Car
         private void CapSpeed()
         {
             float speed = m_Rigidbody.velocity.magnitude;
+            float m_Topspeed_reverse = 2.5f * 2.23693629f;
+
             switch (m_SpeedType)
             {
                 case SpeedType.MPH:
 
                     speed *= 2.23693629f;
-                    if (speed > m_Topspeed)
+                    if ((GetComponent<CarAIControl>().get_stuck || GetComponent<CarAIControl>().moveBack)
+                    && speed > m_Topspeed_reverse)
+                        m_Rigidbody.velocity = (m_Topspeed_reverse/2.23693629f) * m_Rigidbody.velocity.normalized;
+                    else if (speed > m_Topspeed)
                         m_Rigidbody.velocity = (m_Topspeed/2.23693629f) * m_Rigidbody.velocity.normalized;
                     break;
 

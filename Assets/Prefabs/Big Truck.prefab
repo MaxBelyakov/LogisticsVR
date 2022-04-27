@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 1899497968012686458}
   m_Layer: 22
   m_Name: ColliderFront
-  m_TagString: big truck
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -159,7 +159,7 @@ WheelCollider:
     m_ExtremumValue: 1
     m_AsymptoteSlip: 0.5
     m_AsymptoteValue: 0.75
-    m_Stiffness: 1
+    m_Stiffness: 10
   m_Enabled: 1
 --- !u!82 &1899497968344362069
 AudioSource:
@@ -333,7 +333,7 @@ WheelCollider:
     m_ExtremumValue: 1
     m_AsymptoteSlip: 0.5
     m_AsymptoteValue: 0.75
-    m_Stiffness: 1
+    m_Stiffness: 10
   m_Enabled: 1
 --- !u!82 &1899497968359411954
 AudioSource:
@@ -1019,7 +1019,7 @@ WheelCollider:
     m_ExtremumValue: 1
     m_AsymptoteSlip: 0.5
     m_AsymptoteValue: 0.75
-    m_Stiffness: 1
+    m_Stiffness: 10
   m_Enabled: 1
 --- !u!82 &1899497968651396340
 AudioSource:
@@ -1193,7 +1193,7 @@ WheelCollider:
     m_ExtremumValue: 1
     m_AsymptoteSlip: 0.5
     m_AsymptoteValue: 0.75
-    m_Stiffness: 1
+    m_Stiffness: 10
   m_Enabled: 1
 --- !u!82 &1899497968660234423
 AudioSource:
@@ -1319,7 +1319,7 @@ GameObject:
   - component: {fileID: 1899497968681824856}
   m_Layer: 22
   m_Name: ColliderBody
-  m_TagString: big truck
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -8455,7 +8455,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 390957546169506671, guid: eb40fdc3f381e164eaea4aa9f3b589ec, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.05999756
+      value: -0.040000916
       objectReference: {fileID: 0}
     - target: {fileID: 390957546169506671, guid: eb40fdc3f381e164eaea4aa9f3b589ec, type: 3}
       propertyPath: m_LocalPosition.z
@@ -8773,7 +8773,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4279030854770878935, guid: a4d1f167da415f947b23b6535aa8b965, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.05999756
+      value: -0.04
       objectReference: {fileID: 0}
     - target: {fileID: 4279030854770878935, guid: a4d1f167da415f947b23b6535aa8b965, type: 3}
       propertyPath: m_LocalPosition.z
@@ -9075,7 +9075,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6121501604133647228, guid: 8e140453ac7c5b5498aa9619ffaa7669, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.05999756
+      value: -0.040000916
       objectReference: {fileID: 0}
     - target: {fileID: 6121501604133647228, guid: 8e140453ac7c5b5498aa9619ffaa7669, type: 3}
       propertyPath: m_LocalPosition.z
@@ -9141,7 +9141,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5670755888025320617, guid: 4efbd2b7402c36c4393febe0f4e33b81, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.06
+      value: -0.040003356
       objectReference: {fileID: 0}
     - target: {fileID: 5670755888025320617, guid: 4efbd2b7402c36c4393febe0f4e33b81, type: 3}
       propertyPath: m_LocalPosition.z
