@@ -133,3 +133,14 @@ v.2.4.1:
 - fix: big truck checkpoint movement;
 - fix: big truck call button call only 1 time;
 - fix: increase pallet height.
+
+v.2.4.2:
+- police car random call;
+- fix: police audio volume;
+- fix: small truck stop engine smoke when dont move;
+- fix: small truck audio volume;
+- fix: big truck audio volume;
+- fix: big truck doors improve movement;
+- fix: player body fall when moving truck;
+- fix: player teleport to warehouse outside stairs;
+- fix: warehouse wall looks like window.
