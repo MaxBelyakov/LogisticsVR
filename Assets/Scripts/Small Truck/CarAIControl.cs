@@ -57,6 +57,8 @@ namespace UnityStandardAssets.Vehicles.Car
 
         public bool moveBack;                       // Flag when need to start moving back
 
+        public ParticleSystem ParticleBurnoutSmoke; // Engine smoke particle system
+
         private void Awake()
         {
             // get the car controller reference
@@ -81,7 +83,12 @@ namespace UnityStandardAssets.Vehicles.Car
             if (m_Target == null || !m_Driving)
             {
                 // Car should not be moving, use handbrake to stop
-                m_CarController.Move(0, 0, 0, 1f);
+                if (m_Rigidbody.isKinematic == false)
+                    m_CarController.Move(0, 0, 0, 1f);
+
+                // Stop engine smoke when do not move
+                if (ParticleBurnoutSmoke.isEmitting)
+                    ParticleBurnoutSmoke.Stop();
             }
             else
             {
@@ -226,6 +233,10 @@ namespace UnityStandardAssets.Vehicles.Car
                 {
                     m_Driving = false;
                 }
+
+                // Engine smoke
+                if (ParticleBurnoutSmoke.isStopped)
+                    ParticleBurnoutSmoke.Play();
             }
         }
 

@@ -43,7 +43,7 @@ public class XRGrabDoorHandle : XRGrabInteractable
         transform.localScale = grabScale;
 
         // Stop handler rotataing when dropped
-        handler.GetComponent<Rigidbody>().velocity = Vector3.zero;
-        handler.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
+        //handler.GetComponent<Rigidbody>().velocity = Vector3.zero;
+        //handler.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
     }
 }

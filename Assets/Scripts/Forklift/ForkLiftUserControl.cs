@@ -79,6 +79,9 @@ namespace ForkLift
             currentSeat = new GameObject("current seat");
             currentSeat.transform.SetParent(seat, false);
             currentSeat.transform.position = player.transform.position;
+
+            // Unblock players rotation while riding forklift
+            player.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None;
         }
 
         // Listener. Drop rudder
@@ -194,8 +197,8 @@ namespace ForkLift
             inertia = true;
             yield return new WaitForSeconds(0.3f);
 
-            // Cancel holding player
-            player.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None;
+            // Return blocking player rig rotation
+            player.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeRotation;
 
             inertia = false;
         }

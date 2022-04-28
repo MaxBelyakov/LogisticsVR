@@ -46,49 +46,6 @@ namespace UnityStandardAssets.Vehicles.Car
         {
             skidParticles.transform.position = transform.position - transform.up*m_WheelCollider.radius;
             skidParticles.Emit(1);
-            if (!skidding)
-            {
-                StartCoroutine(StartSkidTrail());
-            }
-        }
-
-
-        public void PlayAudio()
-        {
-            m_AudioSource.Play();
-            PlayingAudio = true;
-        }
-
-
-        public void StopAudio()
-        {
-            m_AudioSource.Stop();
-            PlayingAudio = false;
-        }
-
-
-        public IEnumerator StartSkidTrail()
-        {
-            skidding = true;
-            m_SkidTrail = Instantiate(SkidTrailPrefab);
-            while (m_SkidTrail == null)
-            {
-                yield return null;
-            }
-            m_SkidTrail.parent = transform;
-            m_SkidTrail.localPosition = -Vector3.up*m_WheelCollider.radius;
-        }
-
-
-        public void EndSkidTrail()
-        {
-            if (!skidding)
-            {
-                return;
-            }
-            skidding = false;
-            m_SkidTrail.parent = skidTrailsDetachedParent;
-            Destroy(m_SkidTrail.gameObject, 10);
         }
     }
 }

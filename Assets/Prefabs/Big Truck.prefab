@@ -6496,8 +6496,8 @@ MonoBehaviour:
   highDecelClip: {fileID: 8300000, guid: ae345709f97e19847b7404c9b202098f, type: 3}
   pitchMultiplier: 1
   lowPitchMin: 1
-  lowPitchMax: 6
-  highPitchMultiplier: 0.25
+  lowPitchMax: 2
+  highPitchMultiplier: 0.1
   maxRolloffDistance: 500
   dopplerLevel: 1
   useDoppler: 1
@@ -7774,7 +7774,7 @@ HingeJoint:
   m_UseSpring: 1
   m_Spring:
     spring: 0
-    damper: 10
+    damper: 2
     targetPosition: 0
   m_UseMotor: 0
   m_Motor:
@@ -7986,7 +7986,7 @@ MonoBehaviour:
       m_Calls: []
   m_AttachTransform: {fileID: 0}
   m_AttachEaseInTime: 0.15
-  m_MovementType: 2
+  m_MovementType: 0
   m_VelocityDamping: 1
   m_VelocityScale: 1
   m_AngularVelocityDamping: 1
@@ -8165,7 +8165,7 @@ MonoBehaviour:
       m_Calls: []
   m_AttachTransform: {fileID: 0}
   m_AttachEaseInTime: 0.15
-  m_MovementType: 2
+  m_MovementType: 0
   m_VelocityDamping: 1
   m_VelocityScale: 1
   m_AngularVelocityDamping: 1
@@ -8414,7 +8414,7 @@ HingeJoint:
   m_UseSpring: 1
   m_Spring:
     spring: 0
-    damper: 10
+    damper: 2
     targetPosition: 0
   m_UseMotor: 0
   m_Motor:

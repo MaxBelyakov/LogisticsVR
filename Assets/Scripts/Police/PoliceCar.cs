@@ -10,9 +10,8 @@ public class PoliceCar : MonoBehaviour
     public bool policeEnter;                    // Flag to start moving to warehouse
     public bool policeWaiting;                  // Flag to wait
     public bool policeExit;                     // Flag to start moving to exit
-    
-    public List<GameObject> enterPoints;        // The way from respawn to warehouse
-    public List<GameObject> exitPoints;         // The exit way
+
+    public GameObject policeManager;            // Police manager (manage the enter and exit points)  
 
     private bool getTarget;                     // Flag shows that truck has a current target
     private bool waitForBox;                    // Flag shows that police car wait the box
@@ -21,12 +20,6 @@ public class PoliceCar : MonoBehaviour
     private int i = 0;                          // Waypoints counter
 
     public List<Light> lights;                  // All police lights
-
-    void Awake()
-    {
-        // FIXME: for testing
-        policeEnter = true;
-    }
 
     void FixedUpdate()
     {
@@ -76,10 +69,10 @@ public class PoliceCar : MonoBehaviour
     void MoveToWarehouse()
     {
         // Move until the last waypoint
-        if (i < enterPoints.Count)
+        if (i < policeManager.GetComponent<CallPolice>().enterPoints.Count)
         {
             // Select waypoint as car target
-            GetComponent<PoliceAIControl>().m_Target = enterPoints[i].transform;
+            GetComponent<PoliceAIControl>().m_Target = policeManager.GetComponent<CallPolice>().enterPoints[i].transform;
             getTarget = true;
 
             // Car start moving
@@ -102,10 +95,10 @@ public class PoliceCar : MonoBehaviour
     void MoveToExit()
     {
         // Move until the last waypoint
-        if (i < exitPoints.Count)
+        if (i < policeManager.GetComponent<CallPolice>().exitPoints.Count)
         {
             // Select waypoint as car target
-            GetComponent<PoliceAIControl>().m_Target = exitPoints[i].transform;
+            GetComponent<PoliceAIControl>().m_Target = policeManager.GetComponent<CallPolice>().exitPoints[i].transform;
             getTarget = true;
 
             // Car start moving

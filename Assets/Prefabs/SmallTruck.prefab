@@ -1304,7 +1304,7 @@ ParticleSystem:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 467752715125057175}
   serializedVersion: 8
-  lengthInSec: 5
+  lengthInSec: 2
   simulationSpeed: 1
   stopAction: 0
   cullingMode: 3
@@ -1379,8 +1379,8 @@ ParticleSystem:
     startLifetime:
       serializedVersion: 2
       minMaxState: 3
-      scalar: 7
-      minScalar: 3
+      scalar: 3
+      minScalar: 2
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -1512,8 +1512,8 @@ ParticleSystem:
     startSize:
       serializedVersion: 2
       minMaxState: 3
-      scalar: 3
-      minScalar: 2
+      scalar: 2
+      minScalar: 1
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -2058,7 +2058,7 @@ ParticleSystem:
     rateOverTime:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 20
+      scalar: 10
       minScalar: 10
       maxCurve:
         serializedVersion: 2
@@ -6536,6 +6536,7 @@ MonoBehaviour:
   get_stuck: 0
   startMoving: 0
   moveBack: 0
+  ParticleBurnoutSmoke: {fileID: 467752715125057168}
 --- !u!114 &467752715472698569
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6555,8 +6556,8 @@ MonoBehaviour:
   highDecelClip: {fileID: 8300000, guid: 03bf91d88fce91c41995d27de63cc967, type: 3}
   pitchMultiplier: 1
   lowPitchMin: 1
-  lowPitchMax: 5
-  highPitchMultiplier: 0.25
+  lowPitchMax: 2
+  highPitchMultiplier: 0.1
   maxRolloffDistance: 500
   dopplerLevel: 1
   useDoppler: 1
