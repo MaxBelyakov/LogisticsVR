@@ -65,6 +65,7 @@
      <Compile Include="Assets\Oculus\SampleFramework\Core\Locomotion\Scripts\TeleportDestination.cs" />
      <Compile Include="Assets\Oculus\SampleFramework\Usage\HandsTrainExample\Scripts\TrainButtonVisualController.cs" />
      <Compile Include="Assets\Oculus\SampleFramework\Usage\Passthrough\Scripts\GrabObject.cs" />
+     <Compile Include="Assets\Scripts\InfoDesk.cs" />
      <Compile Include="Assets\Oculus\SampleFramework\Core\Locomotion\Scripts\SimpleCapsuleWithStickMovement.cs" />
      <Compile Include="Assets\Oculus\SampleFramework\Usage\Passthrough\Scripts\AugmentedObject.cs" />
      <Compile Include="Assets\Oculus\SampleFramework\Core\HandsInteraction\Scripts\InteractableRegistry.cs" />
@@ -89,6 +90,7 @@
      <Compile Include="Assets\Oculus\SampleFramework\Core\DebugUI\Scripts\DebugUIBuilder.cs" />
      <Compile Include="Assets\Scripts\Police\PoliceController.cs" />
      <Compile Include="Assets\Scripts\FollowPhysics.cs" />
+     <Compile Include="Assets\Scripts\Police\CallPolice.cs" />
      <Compile Include="Assets\Oculus\SampleFramework\Usage\Firebase\SampleUI.cs" />
      <Compile Include="Assets\Oculus\SampleFramework\Core\HandsInteraction\Scripts\ButtonController.cs" />
      <Compile Include="Assets\Oculus\SampleFramework\Core\Locomotion\Scripts\TeleportSupport.cs" />
@@ -118,6 +120,7 @@
      <Compile Include="Assets\Scripts\Truck\TruckWheelEffects.cs" />
      <Compile Include="Assets\Oculus\Avatar\Samples\GripPoses\Scripts\PoseEditHelper.cs" />
      <Compile Include="Assets\Scripts\XRGrabRudder.cs" />
+     <Compile Include="Assets\Scripts\BoxFalling.cs" />
      <Compile Include="Assets\Oculus\SampleFramework\Core\Locomotion\Scripts\TeleportTargetHandlerNavMesh.cs" />
      <Compile Include="Assets\Scripts\ExitZone.cs" />
      <Compile Include="Assets\Oculus\Avatar\Scripts\OvrAvatarTouchController.cs" />
@@ -221,7 +224,6 @@
      <Compile Include="Assets\Oculus\Avatar\Samples\SocialStarter\Assets\Scripts\PlayerController.cs" />
      <Compile Include="Assets\Scripts\XRGrabDoorHandle.cs" />
      <Compile Include="Assets\Oculus\SampleFramework\Usage\HandsTrainExample\Scripts\TrackSegment.cs" />
-     <Compile Include="Assets\Scripts\Police\CallPolice.cs" />
      <None Include="Assets\Oculus\SampleFramework\Usage\HandsTrainExample\Shaders\XingLightShader.shader" />
      <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />
      <None Include="Assets\Oculus\Avatar\Resources\Materials\AvatarMaterialStateShader.cginc" />

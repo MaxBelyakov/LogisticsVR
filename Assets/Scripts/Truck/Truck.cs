@@ -21,12 +21,17 @@ public class Truck : MonoBehaviour
     private bool parking;                   // Flag to start parking
     private bool parked;                    // Flag truck is parked
     public bool loadingExit;                // Flag to leave loading zone
+    private bool waiting;                   // Flag truck is waiting
 
     private bool getTarget;                 // Flag shows that truck has a current target
     public bool haveCargo;                  // Flag shows that truck has cargo
 
     public List<Transform> waypoints;       // Waypoints list
     private int i = 0;                      // Waypoints counter
+
+    private Transform parkingHelper;        // Coordinates truck needs parking to use help function
+
+    private int boxesInTruck;               // Amount of boxes in truck before unloading
 
     void Awake()
     {
@@ -41,7 +46,7 @@ public class Truck : MonoBehaviour
             MoveToLoadingZone();
 
         // Listening to start moving to warehouse parking zone
-        if (parking && !getTarget)
+        if (parking && !getTarget && parkingHelper == null)
             MoveToParkingZone();
 
         // Listening to start moving to exit zone
@@ -49,16 +54,16 @@ public class Truck : MonoBehaviour
             MoveToExitZone();
         
         // Listening when truck will be ready to finish loading
-        if (parked)
+        if (parked && !waiting)
         {
             // Threshold angle for each door
             float doorsThreshold = 5f;
 
-            // Check is the doors closed
-            if (leftDoor.eulerAngles.y - doorsThreshold <= 180f && rightDoor.eulerAngles.y + doorsThreshold >= 180f)
+            // Check is the trailer empty from boxes and start exit process
+            if (CheckTrailerCargo(false))
             {
-                // Check is the trailer empty from boxes and start exit process
-                if (CheckTrailerCargo())
+                // Check is the doors closed
+                if (leftDoor.eulerAngles.y - doorsThreshold <= 180f && rightDoor.eulerAngles.y + doorsThreshold >= 180f)
                     StartCoroutine(WaiterExitLoadingZone());
             }
         }
@@ -68,19 +73,12 @@ public class Truck : MonoBehaviour
         {
             // Change flag and stop moving
             parking = false;
+            parked = true;
             GetComponent<TruckAIControl>().m_Driving = false;
             GetComponent<TruckAIControl>().moveBack = false;
 
-            // Correct truck position for easy parking (trailer is still kinematic - don't need correction)
-            // Freeze truck
-            transform.GetComponent<Rigidbody>().isKinematic = true;
             // Move truck to parking point
-            transform.position = FindObjectOfType<LoadingZoneManager2>().parkingPoint.transform.position;
-            // Rotate truck
-            transform.eulerAngles = new Vector3(0f, 180f, 0f);
-
-            // Unfreeze truck head
-            transform.GetComponent<Rigidbody>().isKinematic = false;
+            parkingHelper = FindObjectOfType<LoadingZoneManager2>().trailerParkingPoint;
 
             // Unfreeze doors
             leftDoor.GetComponent<Rigidbody>().isKinematic = false;
@@ -94,11 +92,15 @@ public class Truck : MonoBehaviour
             }
             cargo.DetachChildren();
 
-            // Set parked flag
-            parked = true;
+            // Count boxes in truck before unloading
+            CheckTrailerCargo(true);
         }
         else if (GetTarget(loadingEnter) || GetTarget(loadingExit))
             i++;
+        
+        // Parking helper
+        if (parkingHelper != null)
+            ParkingHelper(parkingHelper);
     }
 
     // Move to LOADING ZONE
@@ -119,36 +121,28 @@ public class Truck : MonoBehaviour
             // Stop in last waypoint
             GetComponent<TruckAIControl>().m_Driving = false;
 
+            // Freeze truck
+            transform.GetComponent<Rigidbody>().isKinematic = true;
+            
+            // Move and rotate truck
+            parkingHelper = waypoints[waypoints.Count - 1];
+
             // Reset counter and start parking
             i = 0;
             loadingEnter = false;
-
-            // Correct truck and trailer position to easy parking
-            // Freeze truck
-            transform.GetComponent<Rigidbody>().isKinematic = true;
-            // Disable joint
-            trailer.transform.GetComponent<HingeJoint>().connectedBody = null;
-            trailer.transform.GetComponent<HingeJoint>().useSpring = false;
-            // Freeze trailer
-            trailer.transform.GetComponent<Rigidbody>().isKinematic = true;
-            // Rotate trailer
-            Quaternion trailerRotation = trailer.transform.localRotation;
-            trailer.transform.localRotation = Quaternion.Euler(trailerRotation.x, 0f, trailerRotation.z);
-            // Move trailer
-            Vector3 trailerPosition = trailer.transform.localPosition;
-            trailer.transform.localPosition = new Vector3(0f, trailerPosition.y, trailerPosition.z);
-            // Move and rotate truck
-            transform.position = waypoints[waypoints.Count - 1].position;
-            transform.eulerAngles = new Vector3(0f, 180f, 0f);
-
-            // Waiting for parking. Just little pause to fix physics movement between truck and trailer
-            StartCoroutine(WaitingForParking());
+            parking = true;
         }
     }
 
     // Move to PARKING ZONE
     void MoveToParkingZone()
     {
+        // Freeze trailer rotation
+        trailer.transform.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeRotationY;
+
+        // Unfreeze truck
+        transform.GetComponent<Rigidbody>().isKinematic = false;
+        
         // Select warehouse parking point as truck target
         GetComponent<TruckAIControl>().m_Target = FindObjectOfType<LoadingZoneManager2>().parkingPoint.transform;
         getTarget = true;
@@ -192,43 +186,32 @@ public class Truck : MonoBehaviour
         return false;
     }
 
-    // Waiting for parking. Just little pause to fix physics movement between truck and trailer
-    IEnumerator WaitingForParking()
-    {
-        yield return new WaitForSeconds(1f);
-
-        // Unfreeze truck
-        transform.GetComponent<Rigidbody>().isKinematic = false;
-
-        yield return new WaitForSeconds(1f);
-
-        // Parking flag
-        parking = true;
-    }
-
-    // For testing. FIXME. Add finish loading triggers
+    // Truck exiting warehouse
     IEnumerator WaiterExitLoadingZone()
     {
-        yield return new WaitForSeconds(2f);
-
         // Freeze doors
         leftDoor.GetComponent<Rigidbody>().isKinematic = true;
         rightDoor.GetComponent<Rigidbody>().isKinematic = true;
+        
+        // Start waiting
+        waiting = true;
+        
+        yield return new WaitForSeconds(2f);
 
-        // Enable joint
-        trailer.transform.GetComponent<HingeJoint>().connectedBody = transform.GetComponent<Rigidbody>();
-        trailer.transform.GetComponent<HingeJoint>().useSpring = true;
-
-        // Unfreeze trailer
-        trailer.transform.GetComponent<Rigidbody>().isKinematic = false;
+        // Unfreeze trailer rotation
+        trailer.transform.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None;
 
         // Send exit waypoints to truck
         waypoints = FindObjectOfType<LoadingZoneManager2>().exitWaypoints;
+
+        // Reset boxes storage
+        boxesInTruck = 0;
 
         // Reset counter and flags
         i = 0;
         loadingExit = true;
         haveCargo = false;
+        waiting = false;
     }
 
     // Truck start moving function
@@ -252,10 +235,13 @@ public class Truck : MonoBehaviour
     }
 
     // Inspect trailer cargo slot. Looking for boxes inside trailer.
-    private bool CheckTrailerCargo()
+    private bool CheckTrailerCargo(bool saveCount)
     {
         // Trailer lenght
         float trailerLenght = 14f;
+
+        // Reset counter
+        int m = 0;
 
         // Use box cast to expand ray of search
         RaycastHit[] targets = Physics.BoxCastAll(trailerCargoCollider.position, trailerCargoCollider.lossyScale, trailerCargoCollider.forward, trailerCargoCollider.rotation, trailerLenght);
@@ -264,9 +250,101 @@ public class Truck : MonoBehaviour
             foreach (var target in targets)
             {
                 if (target.transform.tag == "box")
-                    return false;
+                    m++;
             }
         }
-        return true;
+
+        // Save amount of boxes before truck unloading
+        if (saveCount)
+            boxesInTruck = m;
+        else
+        {
+            // Send counter to info desk. Take in account amount of boxes before unloading truck
+            GameObject.FindGameObjectWithTag("info desk").GetComponent<InfoDesk>().unloaded += boxesInTruck - m;
+            boxesInTruck = m;
+        }
+
+        // Truck can't leave unloading while there are boxes inside
+        if (m != 0)
+            return false;
+        else
+            return true;
+    }
+
+    // Helping truck to park correct by moving and rotating it
+    void ParkingHelper(Transform target)
+    {
+        // Flags shows is a rotation or position in target value
+        var rotation = false;
+        var position = false;
+        var trailerRotation = false;
+
+        // Thresholds for rotation and position
+        var rotationThreshold = -0.9999f;
+        var positionThreshold = 0.01f;
+
+        // Parking to loading zone helper
+        if (parking)
+        {
+            // Determine which direction to rotate towards. Get parking point and move it forward
+            Vector3 targetDirection = target.position + target.forward * 40f - transform.position;
+            
+            // Rotate the forward vector towards the target direction by one step
+            Vector3 newDirection = Vector3.RotateTowards(transform.forward, targetDirection, 0.5f * Time.deltaTime, 0.0f);
+
+            // Calculate difference between truck and target position
+            var posX = Mathf.Abs(transform.position.x - target.position.x);
+            var posZ = Mathf.Abs(transform.position.z - target.position.z);
+
+            // Compare truck rotation with the target
+            if (newDirection.z > rotationThreshold)
+                // Applies rotation to truck target
+                transform.rotation = Quaternion.LookRotation(newDirection);
+            else
+                rotation = true;
+
+            // Compare truck position with the target
+            if (posX > positionThreshold && posZ > positionThreshold)
+                // Applies moving to truck target
+                transform.position = Vector3.MoveTowards(transform.position, target.position, 1.5f * Time.deltaTime);
+            else
+                position = true;
+            
+            // Correct target height (trailer and truck center on different height)
+            Vector3 truckTarget = new Vector3(transform.position.x, trailer.transform.position.y, transform.position.z);
+
+            // Determine which direction to rotate towards. Get parking point and move it forward
+            Vector3 trailerTargetDirection = truckTarget - trailer.transform.position;
+            
+            // Rotate the forward vector towards the target direction by one step
+            Vector3 trailerNewDirection = Vector3.RotateTowards(trailer.transform.forward, trailerTargetDirection, 1f * Time.deltaTime, 0.0f);
+
+            // Compare trailer rotation with the target
+            if (Mathf.Abs(trailerNewDirection.x) > 0.02f)
+                // Applies rotation to trailer target
+                trailer.transform.rotation = Quaternion.LookRotation(trailerNewDirection);
+            else
+                trailerRotation = true;
+            
+            // Finish parking helper
+            if (rotation && position && trailerRotation)
+                parkingHelper = null;
+        }
+        
+        // Parking to warehouse helper
+        if (parked)
+        {
+            // Calculate difference between truck and target position
+            var trailerPosX = Mathf.Abs(trailer.transform.position.x - target.position.x);
+            var trailerPosZ = Mathf.Abs(trailer.transform.position.z - target.position.z);
+
+            // Compare truck position with the target
+            if (trailerPosX > positionThreshold && trailerPosZ > positionThreshold)
+                // Applies moving to truck target
+                trailer.transform.position = Vector3.MoveTowards(trailer.transform.position, target.position, 1.5f * Time.deltaTime);
+            else
+                // Finish parking helper
+                parkingHelper = null;
+        }
     }
 }

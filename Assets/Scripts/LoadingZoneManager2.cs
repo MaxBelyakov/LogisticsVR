@@ -9,6 +9,7 @@ public class LoadingZoneManager2 : MonoBehaviour
     public List<Transform> enterWaypoints;      // Enter to loading zone waypoints
     public List<Transform> exitWaypoints;       // Exit from loading zone waypoints
     public GameObject parkingPoint;             // Warehouse parking point
+    public Transform trailerParkingPoint;       // Parking point for trailer
 
     private Collider waitArrested;               // Save triggered collider if in moment of trigger police arrest warehouse
 

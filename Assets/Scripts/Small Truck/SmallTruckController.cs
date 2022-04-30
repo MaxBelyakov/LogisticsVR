@@ -14,6 +14,9 @@ public class SmallTruckController : MonoBehaviour
     public bool loaded;                     // Flag truck is loaded
     private bool unloading;                 // Flag truck unloading
     private bool goToManager;               // Flag truck finish work and need to start again
+    private bool waiting;                   // Flag truck is waiting
+
+    private Transform parkingHelper;        // Coordinates truck needs parking to use help function
 
     public List<GameObject> deliveryPoints;     // The way from manager zone to the cell
     public List<GameObject> unloadingPoints;    // Points where truck unload boxes
@@ -30,6 +33,8 @@ public class SmallTruckController : MonoBehaviour
 
     private int i = 0;                      // Waypoints counter
 
+    private int boxesInTruck;               // Amount of boxes in truck before loading
+
     void FixedUpdate()
     {
         // Listening for flag moving to the waiting cell (by LoadingZoneManager)
@@ -45,7 +50,7 @@ public class SmallTruckController : MonoBehaviour
             MoveToParkingZone();
       
         // Listening when truck will be ready to finish loading
-        if (parked)
+        if (parked && !waiting)
         {
             // Check is the truck full of boxes and start exit process
             if (CheckTruckCargo())
@@ -69,16 +74,17 @@ public class SmallTruckController : MonoBehaviour
             GetComponent<CarAIControl>().m_Driving = false;
             GetComponent<CarAIControl>().moveBack = false;
             
-            // Correct truck position for easy parking
             // Freeze truck
             transform.GetComponent<Rigidbody>().isKinematic = true;
-            // Move truck to parking point
-            transform.position = FindObjectOfType<LoadingZoneManager>().parkingPoint.transform.position;
-            // Rotate truck
-            transform.eulerAngles = new Vector3(0f, 180f, 0f);
+
+            // Move truck to parking point by Parking helper
+            parkingHelper = FindObjectOfType<LoadingZoneManager>().parkingPoint.transform;
 
             // Set parked flag
             parked = true;
+
+            // Count boxes in truck before loading
+            CalculateBoxes(true);
         }
         else if (GetTarget(loaded))
         {
@@ -95,7 +101,7 @@ public class SmallTruckController : MonoBehaviour
             {
                 if (GetComponent<CarAIControl>().m_Target.gameObject == point)
                 {
-                    StartCoroutine(Unloading());
+                    StartCoroutine(Unloading(point));
                     break;
                 }
             }
@@ -124,6 +130,10 @@ public class SmallTruckController : MonoBehaviour
             getTarget = false;
             i++;
         }
+
+        // Parking helper
+        if (parkingHelper != null)
+            ParkingHelper(parkingHelper);
     }
 
     // Move to WAITING ZONE
@@ -217,38 +227,66 @@ public class SmallTruckController : MonoBehaviour
     }
 
     // Unloading process
-    IEnumerator Unloading()
+    IEnumerator Unloading(GameObject point)
     {
         unloading = true;
 
         // Stop moving
         GetComponent<CarAIControl>().m_Driving = false;
 
-        yield return new WaitForSeconds(3f);
-
         // Use box cast to expand ray of search inside truck cargo slot
         RaycastHit[] targets = Physics.BoxCastAll(truckCargoScan.position, truckCargoScan.lossyScale, truckCargoScan.forward, truckCargoScan.rotation, truckLenght);
-        
-        int k = 1;
 
+        // Search player in truck
         if (targets.Length != 0)
         {
-            // Check all items inside truck cargo slot
             foreach (var target in targets)
             {
-                // Remove box each circle but not more than unload limit
-                if (target.transform.tag == "box" && k <= cargoToUnload)
+                if (target.transform.tag == "Player")
                 {
-                    Destroy(target.transform.gameObject);
-                    k++;
+                    // Switch on target particle
+                    point.transform.GetChild(0).gameObject.SetActive(true);
+
+                    yield return new WaitForSeconds(10f);
+
+                    // Switch off target particle
+                    point.transform.GetChild(0).gameObject.SetActive(false);
+
+                    // Finish unloading
+                    unloading = false;
+                    break;
                 }
             }
+        }
+
+        // No player inside truck, auto unloading
+        if (unloading)
+        {
+            yield return new WaitForSeconds(3f);
+        
+            int k = 1;
+
+            if (targets.Length != 0)
+            {
+                // Check all items inside truck cargo slot
+                foreach (var target in targets)
+                {
+                    // Remove box each circle but not more than unload limit
+                    if (target.transform.tag == "box" && k <= cargoToUnload)
+                    {
+                        Destroy(target.transform.gameObject);
+                        k++;
+                    }
+                }
+            }
+
+            // Finish unloading
+            unloading = false;
         }
 
         yield return new WaitForSeconds(1f);
 
         // Change flag and get next point
-        unloading = false;
         loaded = true;
         getTarget = false;
         i++;
@@ -303,9 +341,13 @@ public class SmallTruckController : MonoBehaviour
     // Waiting a little to start move to exit
     IEnumerator WaitForExitLoadingZone()
     {
+        // Start waiting
+        waiting = true;
+
         yield return new WaitForSeconds(2f);
 
         // Change flags
+        waiting = false;
         parked = false;
         loaded = true;
 
@@ -313,6 +355,11 @@ public class SmallTruckController : MonoBehaviour
 
         // Unfreeze truck
         transform.GetComponent<Rigidbody>().isKinematic = false;
+
+        yield return new WaitForSeconds(3f);
+
+        // Count all loaded boxes
+        CalculateBoxes(false);
     }
 
     // Waiting for start parking
@@ -336,6 +383,9 @@ public class SmallTruckController : MonoBehaviour
         // Reset box counter
         int n = 0;
 
+        // All finded boxes
+        List<GameObject> boxes = new List<GameObject>(); 
+
         // Use box cast to expand ray of search
         RaycastHit[] targets = Physics.BoxCastAll(truckCargoScan.position, truckCargoScan.lossyScale, truckCargoScan.forward, truckCargoScan.rotation, truckLenght);
         if (targets.Length != 0)
@@ -346,12 +396,26 @@ public class SmallTruckController : MonoBehaviour
                 if (target.transform.tag == "forklift")
                 {
                     n = 0;
+                    boxes.Clear();
                     break;
                 }
 
                 // Add box to counter
                 if (target.transform.tag == "box")
+                {
+                    boxes.Add(target.transform.gameObject);
                     n++;
+                }
+            }
+
+            // Unfix boxes on cargo pallet
+            if (n != 0 && boxes.Count != 0)
+            {
+                foreach (var box in boxes)
+                {
+                    if (box.GetComponent<FixedJoint>() != null)
+                        Destroy(box.GetComponent<FixedJoint>());
+                }
             }
         }
 
@@ -360,5 +424,78 @@ public class SmallTruckController : MonoBehaviour
             return true;
         else
             return false;
+    }
+
+    // Count all loaded boxes again, after truck start moving
+    private void CalculateBoxes(bool saveCount)
+    {
+        // Reset counter
+        int m = 0;
+
+        // Use box cast to expand ray of search
+        RaycastHit[] targets = Physics.BoxCastAll(truckCargoScan.position, truckCargoScan.lossyScale, truckCargoScan.forward, truckCargoScan.rotation, truckLenght);
+        if (targets.Length != 0)
+        {
+            foreach (var target in targets)
+            {
+                // Add box to counter
+                if (target.transform.tag == "box")
+                    m++;
+            }
+        }
+
+        if (saveCount)
+            boxesInTruck = m;
+        else
+        {
+            // Take in account amount of boxes before loading truck
+            m = m - boxesInTruck;
+
+            // Send counter to info desk
+            GameObject.FindGameObjectWithTag("info desk").GetComponent<InfoDesk>().loaded += m;
+
+            // Reset boxes storage
+            boxesInTruck = 0;
+        }
+    }
+
+    // Helping truck to park correct by moving and rotating it
+    void ParkingHelper(Transform target)
+    {
+        // Flags shows is a rotation or position in target value
+        var rotation = false;
+        var position = false;
+
+        // Determine which direction to rotate towards. Get parking point and move it forward
+        Vector3 targetDirection = target.position + target.forward * 40f - transform.position;
+        
+        // Rotate the forward vector towards the target direction by one step
+        Vector3 newDirection = Vector3.RotateTowards(transform.forward, targetDirection, 0.5f * Time.deltaTime, 0.0f);
+
+        // Calculate difference between truck and target position
+        var posX = Mathf.Abs(transform.position.x - target.position.x);
+        var posZ = Mathf.Abs(transform.position.z - target.position.z);
+
+        // Thresholds for rotation and position
+        var rotationThreshold = -0.9999f;
+        var positionThreshold = 0.01f;
+
+        // Compare truck rotation with the target
+        if (newDirection.z > rotationThreshold)
+            // Applies rotation to truck target
+            transform.rotation = Quaternion.LookRotation(newDirection);
+        else
+            rotation = true;
+
+        // Compare truck position with the target
+        if (posX > positionThreshold && posZ > positionThreshold)
+            // Applies moving to truck target
+            transform.position = Vector3.MoveTowards(transform.position, target.position, 1.5f * Time.deltaTime);
+        else
+            position = true;
+        
+        // Finish parking helper
+        if (rotation && position)
+            parkingHelper = null;        
     }
 }

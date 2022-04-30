@@ -17,6 +17,8 @@ public class PoliceCar : MonoBehaviour
     private bool waitForBox;                    // Flag shows that police car wait the box
     public bool getBox;                         // Flag shows that police car get box
 
+    private bool signalOn;                      // Flag shows the audio signal turned on
+
     private int i = 0;                          // Waypoints counter
 
     public List<Light> lights;                  // All police lights
@@ -35,7 +37,6 @@ public class PoliceCar : MonoBehaviour
             {
                 // Turn on lights
                 transform.GetComponent<Animator>().enabled = true;
-                transform.GetComponent<AudioSource>().enabled = true;
 
                 GameObject.FindGameObjectWithTag("loading zone manager").GetComponent<LoadingZoneManager>().arrested = true;
                 waitForBox = true;
@@ -48,6 +49,12 @@ public class PoliceCar : MonoBehaviour
                     // Move to exit waiter
                     policeWaiting = false;
                     StartCoroutine(WaitingForExit());
+                }
+                else
+                {
+                    // Turn on signals audio with delay
+                    if (!signalOn)
+                        StartCoroutine(TurnOnAudioSignals());
                 }
             }
         }
@@ -171,5 +178,16 @@ public class PoliceCar : MonoBehaviour
             Destroy(collider.transform.parent.gameObject);
             getBox = true;
         }
+    }
+
+    // Turn on police signals audio with delay in time
+    IEnumerator TurnOnAudioSignals()
+    {
+        signalOn = true;
+        transform.GetComponent<AudioSource>().Play();
+
+        yield return new WaitForSeconds(20f);
+
+        signalOn = false;
     }
 }

@@ -12,6 +12,8 @@ TagManager:
   - forklift
   - police car
   - loading zone manager
+  - unloading reticle
+  - info desk
   layers:
   - Default
   - TransparentFX
