@@ -144,3 +144,17 @@ v.2.4.2:
 - fix: player body fall when moving truck;
 - fix: player teleport to warehouse outside stairs;
 - fix: warehouse wall looks like window.
+
+v.2.5:
+- box delivery (player drops boxes from truck to delivery points);
+- info desk on warehouse wall (boxes loaded, unloaded, delivered and money counter);
+- parking helper system for trucks (more accurate connection to warehouse);
+- loading boxes counter (player put boxes in the truck);
+- loading boxes counter consider boxes that were in truck before loading;
+- unloading boxes counter (player get boxes from big truck trailer);
+- delivered boxes counter;
+- boxes are fixed on pallet, unfixing when loading in truck;
+- box drop audio (glass);
+- fix: police signal audio with pauses and low volume;
+- fix: forklift shifter longer and expanded attach collider;
+- fix: expanded teleport to forklift.
