@@ -158,3 +158,8 @@ v.2.5:
 - fix: police signal audio with pauses and low volume;
 - fix: forklift shifter longer and expanded attach collider;
 - fix: expanded teleport to forklift.
+
+v.2.5.1:
+- fix: game slow down when big truck trailer is parking. Physics and truck controller get a lot of CPU;
+- fix: big truck parking helper rotation;
+- fix: big truck doors very hard to open.
