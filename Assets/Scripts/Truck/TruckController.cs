@@ -20,7 +20,7 @@ namespace Trucks
     public class TruckController : MonoBehaviour
     {
         [SerializeField] private CarDriveType m_CarDriveType = CarDriveType.FourWheelDrive;
-        [SerializeField] private WheelCollider[] m_WheelColliders = new WheelCollider[4];
+        public WheelCollider[] m_WheelColliders = new WheelCollider[4];
         [SerializeField] private GameObject[] m_WheelMeshes = new GameObject[4];
         [SerializeField] private TruckWheelEffects[] m_WheelEffects = new TruckWheelEffects[4];
         [SerializeField] private Vector3 m_CentreOfMassOffset;

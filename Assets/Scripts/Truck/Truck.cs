@@ -20,6 +20,7 @@ public class Truck : MonoBehaviour
     public bool loadingEnter;               // Flag to start moving to loading zone
     private bool parking;                   // Flag to start parking
     private bool parked;                    // Flag truck is parked
+    private bool unlocked;                  // Flag truck doors and cargo are unlocked
     public bool loadingExit;                // Flag to leave loading zone
     private bool waiting;                   // Flag truck is waiting
 
@@ -54,8 +55,38 @@ public class Truck : MonoBehaviour
             MoveToExitZone();
         
         // Listening when truck will be ready to finish loading
-        if (parked && !waiting)
+        if (parked && !waiting && parkingHelper == null)
         {
+            // Unlock truck doors and cargo
+            if (!unlocked)
+            {
+                // Fix: CPU critical because of physics conflict with truck controller and wheels
+                GetComponent<TruckAIControl>().enabled = false;
+                for (int i = 0; i < 4; i++)
+                {
+                    GetComponent<TruckController>().m_WheelColliders[i].enabled = false;
+                }
+
+                // Freeze truck and trailer
+                trailer.GetComponent<Rigidbody>().isKinematic = true;
+                transform.GetComponent<Rigidbody>().isKinematic = true;
+
+                // Unfreeze doors
+                leftDoor.GetComponent<Rigidbody>().isKinematic = false;
+                rightDoor.GetComponent<Rigidbody>().isKinematic = false;
+
+                // Unfreeze and unparent cargo
+                Rigidbody[] items = cargo.GetComponentsInChildren<Rigidbody>();
+                foreach (Rigidbody item in items)
+                {
+                    item.isKinematic = false;
+                }
+                cargo.DetachChildren();
+
+                // Unlock just one time
+                unlocked = true;
+            }
+
             // Threshold angle for each door
             float doorsThreshold = 5f;
 
@@ -77,20 +108,8 @@ public class Truck : MonoBehaviour
             GetComponent<TruckAIControl>().m_Driving = false;
             GetComponent<TruckAIControl>().moveBack = false;
 
-            // Move truck to parking point
-            parkingHelper = FindObjectOfType<LoadingZoneManager2>().trailerParkingPoint;
-
-            // Unfreeze doors
-            leftDoor.GetComponent<Rigidbody>().isKinematic = false;
-            rightDoor.GetComponent<Rigidbody>().isKinematic = false;
-
-            // Unfreeze and unparent cargo
-            Rigidbody[] items = cargo.GetComponentsInChildren<Rigidbody>();
-            foreach (Rigidbody item in items)
-            {
-                item.isKinematic = false;
-            }
-            cargo.DetachChildren();
+            // Help truck and trailer to park
+            StartCoroutine(ParkingHelperWaiter(FindObjectOfType<LoadingZoneManager2>().trailerParkingPoint));
 
             // Count boxes in truck before unloading
             CheckTrailerCargo(true);
@@ -124,8 +143,8 @@ public class Truck : MonoBehaviour
             // Freeze truck
             transform.GetComponent<Rigidbody>().isKinematic = true;
             
-            // Move and rotate truck
-            parkingHelper = waypoints[waypoints.Count - 1];
+            // Help truck and trailer to park
+            StartCoroutine(ParkingHelperWaiter(waypoints[waypoints.Count - 1]));
 
             // Reset counter and start parking
             i = 0;
@@ -192,14 +211,29 @@ public class Truck : MonoBehaviour
         // Freeze doors
         leftDoor.GetComponent<Rigidbody>().isKinematic = true;
         rightDoor.GetComponent<Rigidbody>().isKinematic = true;
+
+        yield return new WaitForSeconds(1f);
+
+        // Unfreeze trailer
+        trailer.GetComponent<Rigidbody>().isKinematic = false;
         
         // Start waiting
         waiting = true;
         
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(1f);
 
         // Unfreeze trailer rotation
         trailer.transform.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None;
+
+        // Unfreeze truck
+        transform.GetComponent<Rigidbody>().isKinematic = false;
+
+        // Fix: CPU critical because of physics conflict with truck controller and wheels
+        GetComponent<TruckAIControl>().enabled = true;
+        for (int i = 0; i < 4; i++)
+        {
+            GetComponent<TruckController>().m_WheelColliders[i].enabled = true;
+        }
 
         // Send exit waypoints to truck
         waypoints = FindObjectOfType<LoadingZoneManager2>().exitWaypoints;
@@ -317,10 +351,10 @@ public class Truck : MonoBehaviour
             Vector3 trailerTargetDirection = truckTarget - trailer.transform.position;
             
             // Rotate the forward vector towards the target direction by one step
-            Vector3 trailerNewDirection = Vector3.RotateTowards(trailer.transform.forward, trailerTargetDirection, 1f * Time.deltaTime, 0.0f);
+            Vector3 trailerNewDirection = Vector3.RotateTowards(trailer.transform.forward, trailerTargetDirection, 0.7f * Time.deltaTime, 0.0f);
 
             // Compare trailer rotation with the target
-            if (Mathf.Abs(trailerNewDirection.x) > 0.02f)
+            if (Mathf.Abs(trailerNewDirection.x) >= 0.02f)
                 // Applies rotation to trailer target
                 trailer.transform.rotation = Quaternion.LookRotation(trailerNewDirection);
             else
@@ -345,6 +379,41 @@ public class Truck : MonoBehaviour
             else
                 // Finish parking helper
                 parkingHelper = null;
+        }
+    }
+
+    // First step of Parking Helper function. Start correction and wait. Then set accurate position and rotation
+    IEnumerator ParkingHelperWaiter(Transform target)
+    {
+        // Start correction to target
+        parkingHelper = target;
+
+        yield return new WaitForSeconds(3f);
+
+        // Accurate position and rotation of truck and trailer
+        if (parking && parkingHelper != null)
+        {
+            // If truck is still correcting, finish it
+            parkingHelper = null;
+
+            // Set accurate values
+            transform.rotation = target.rotation;
+            transform.position = target.position;
+            trailer.transform.rotation = target.rotation;
+        }
+
+        // Accurate position and rotation of truck and trailer
+        if (parked)
+        {
+            // Finish parking helper
+            parkingHelper = null;
+
+            // Freeze truck and trailer (for ensurance)
+            trailer.GetComponent<Rigidbody>().isKinematic = true;
+            transform.GetComponent<Rigidbody>().isKinematic = true;
+
+            // Set trailer accurate position
+            trailer.transform.position = target.position;
         }
     }
 }
