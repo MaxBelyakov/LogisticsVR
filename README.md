@@ -163,3 +163,11 @@ v.2.5.1:
 - fix: game slow down when big truck trailer is parking. Physics and truck controller get a lot of CPU;
 - fix: big truck parking helper rotation;
 - fix: big truck doors very hard to open.
+
+v.2.5.2:
+- update boxes on pallet (change joint on kinematic) to avoid CPU increasing;
+- update unfreezing boxes when put on pallet in small truck;
+- delete loading manager 2 for big truck and merge it to loading zone manager;
+- update start moving process for big truck, there is no more need to go back before move forward;
+- fix: big truck stuck when exit warehouse;
+- fix: increase big truck floor level for the best forklift behavior.
