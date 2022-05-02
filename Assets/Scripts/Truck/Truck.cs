@@ -36,14 +36,17 @@ public class Truck : MonoBehaviour
 
     void Awake()
     {
-        // Truck have cargo by default
-        haveCargo = true;
+        // Set truck waypoints
+        waypoints = FindObjectOfType<LoadingZoneManager>().bigTruckEnterWaypoints;
+
+        // Move truck to loading zone
+        loadingEnter = true;
     }
 
     void FixedUpdate()
     {
-        // Listening to start moving to loading zone (by LoadingZoneManager2)
-        if (loadingEnter && !getTarget)
+        // Listening to start moving to loading zone
+        if (loadingEnter && !getTarget && !FindObjectOfType<LoadingZoneManager>().arrested)
             MoveToLoadingZone();
 
         // Listening to start moving to warehouse parking zone
@@ -60,13 +63,6 @@ public class Truck : MonoBehaviour
             // Unlock truck doors and cargo
             if (!unlocked)
             {
-                // Fix: CPU critical because of physics conflict with truck controller and wheels
-                GetComponent<TruckAIControl>().enabled = false;
-                for (int i = 0; i < 4; i++)
-                {
-                    GetComponent<TruckController>().m_WheelColliders[i].enabled = false;
-                }
-
                 // Freeze truck and trailer
                 trailer.GetComponent<Rigidbody>().isKinematic = true;
                 transform.GetComponent<Rigidbody>().isKinematic = true;
@@ -75,11 +71,12 @@ public class Truck : MonoBehaviour
                 leftDoor.GetComponent<Rigidbody>().isKinematic = false;
                 rightDoor.GetComponent<Rigidbody>().isKinematic = false;
 
-                // Unfreeze and unparent cargo
+                // Unfreeze pallets and unparent cargo
                 Rigidbody[] items = cargo.GetComponentsInChildren<Rigidbody>();
                 foreach (Rigidbody item in items)
                 {
-                    item.isKinematic = false;
+                    if (item.tag == "pallet")
+                        item.isKinematic = false;
                 }
                 cargo.DetachChildren();
 
@@ -109,7 +106,7 @@ public class Truck : MonoBehaviour
             GetComponent<TruckAIControl>().moveBack = false;
 
             // Help truck and trailer to park
-            StartCoroutine(ParkingHelperWaiter(FindObjectOfType<LoadingZoneManager2>().trailerParkingPoint));
+            StartCoroutine(ParkingHelperWaiter(FindObjectOfType<LoadingZoneManager>().trailerParkingPoint));
 
             // Count boxes in truck before unloading
             CheckTrailerCargo(true);
@@ -133,7 +130,11 @@ public class Truck : MonoBehaviour
             getTarget = true;
 
             // Truck start moving
-            TruckStartMoving(true);
+            GetComponent<TruckAIControl>().startMoving = true;
+            GetComponent<TruckAIControl>().m_Driving = true;
+
+            // Add extra power to start moving
+            transform.Translate(transform.forward * Time.deltaTime * 2f);
         } 
         else
         {
@@ -163,11 +164,13 @@ public class Truck : MonoBehaviour
         transform.GetComponent<Rigidbody>().isKinematic = false;
         
         // Select warehouse parking point as truck target
-        GetComponent<TruckAIControl>().m_Target = FindObjectOfType<LoadingZoneManager2>().parkingPoint.transform;
+        GetComponent<TruckAIControl>().m_Target = FindObjectOfType<LoadingZoneManager>().bigTruckParkingPoint.transform;
         getTarget = true;
 
         // Truck start moving (back)
-        TruckStartMoving(false);
+        GetComponent<TruckAIControl>().startMoving = true;
+        GetComponent<TruckAIControl>().m_Driving = true;
+        GetComponent<TruckAIControl>().moveBack = true;
     }
 
     // Move to EXIT ZONE
@@ -181,7 +184,11 @@ public class Truck : MonoBehaviour
             getTarget = true;
 
             // Truck start moving
-            TruckStartMoving(true);
+            GetComponent<TruckAIControl>().startMoving = true;
+            GetComponent<TruckAIControl>().m_Driving = true;
+
+            // Add extra power to start moving
+            transform.Translate(transform.forward * Time.deltaTime);
         }
     }
 
@@ -228,15 +235,8 @@ public class Truck : MonoBehaviour
         // Unfreeze truck
         transform.GetComponent<Rigidbody>().isKinematic = false;
 
-        // Fix: CPU critical because of physics conflict with truck controller and wheels
-        GetComponent<TruckAIControl>().enabled = true;
-        for (int i = 0; i < 4; i++)
-        {
-            GetComponent<TruckController>().m_WheelColliders[i].enabled = true;
-        }
-
         // Send exit waypoints to truck
-        waypoints = FindObjectOfType<LoadingZoneManager2>().exitWaypoints;
+        waypoints = FindObjectOfType<LoadingZoneManager>().bigTruckExitWaypoints;
 
         // Reset boxes storage
         boxesInTruck = 0;
@@ -244,28 +244,7 @@ public class Truck : MonoBehaviour
         // Reset counter and flags
         i = 0;
         loadingExit = true;
-        haveCargo = false;
         waiting = false;
-    }
-
-    // Truck start moving function
-    void TruckStartMoving(bool cancelMoveBack)
-    {
-        // Start moving (controls by two variables, check CarAIControl for more info)
-        GetComponent<TruckAIControl>().startMoving = true;
-        GetComponent<TruckAIControl>().m_Driving = true;
-
-        // Fix: truck dont move forward after switch off m_Driving parametr. Need to revert accel value for a 0.1 sec.
-        GetComponent<TruckAIControl>().moveBack = true;
-        if (cancelMoveBack)
-            StartCoroutine(CancelMoveBack());
-    }
-
-    // Fix: truck dont move forward after switch off m_Driving parametr. Need to revert accel value for a 0.1 sec.
-    IEnumerator CancelMoveBack()
-    {
-        yield return new WaitForSeconds(0.1f);
-        GetComponent<TruckAIControl>().moveBack = false;
     }
 
     // Inspect trailer cargo slot. Looking for boxes inside trailer.
@@ -331,14 +310,14 @@ public class Truck : MonoBehaviour
             var posZ = Mathf.Abs(transform.position.z - target.position.z);
 
             // Compare truck rotation with the target
-            if (newDirection.z > rotationThreshold)
+            if (!rotation && newDirection.z > rotationThreshold)
                 // Applies rotation to truck target
                 transform.rotation = Quaternion.LookRotation(newDirection);
             else
                 rotation = true;
 
             // Compare truck position with the target
-            if (posX > positionThreshold && posZ > positionThreshold)
+            if (!position && posX > positionThreshold && posZ > positionThreshold)
                 // Applies moving to truck target
                 transform.position = Vector3.MoveTowards(transform.position, target.position, 1.5f * Time.deltaTime);
             else
@@ -351,14 +330,17 @@ public class Truck : MonoBehaviour
             Vector3 trailerTargetDirection = truckTarget - trailer.transform.position;
             
             // Rotate the forward vector towards the target direction by one step
-            Vector3 trailerNewDirection = Vector3.RotateTowards(trailer.transform.forward, trailerTargetDirection, 0.7f * Time.deltaTime, 0.0f);
+            Vector3 trailerNewDirection = Vector3.RotateTowards(trailer.transform.forward, trailerTargetDirection, Time.deltaTime, 0.0f);
 
-            // Compare trailer rotation with the target
-            if (Mathf.Abs(trailerNewDirection.x) >= 0.02f)
-                // Applies rotation to trailer target
-                trailer.transform.rotation = Quaternion.LookRotation(trailerNewDirection);
-            else
-                trailerRotation = true;
+            if (rotation && position)
+            {
+                // Compare trailer rotation with the target
+                if (Mathf.Abs(trailerNewDirection.x) >= 0.02f)
+                    // Applies rotation to trailer target
+                    trailer.transform.rotation = Quaternion.LookRotation(trailerNewDirection);
+                else
+                    trailerRotation = true;
+            }
             
             // Finish parking helper
             if (rotation && position && trailerRotation)
@@ -388,19 +370,7 @@ public class Truck : MonoBehaviour
         // Start correction to target
         parkingHelper = target;
 
-        yield return new WaitForSeconds(3f);
-
-        // Accurate position and rotation of truck and trailer
-        if (parking && parkingHelper != null)
-        {
-            // If truck is still correcting, finish it
-            parkingHelper = null;
-
-            // Set accurate values
-            transform.rotation = target.rotation;
-            transform.position = target.position;
-            trailer.transform.rotation = target.rotation;
-        }
+        yield return new WaitForSeconds(0.5f);
 
         // Accurate position and rotation of truck and trailer
         if (parked)

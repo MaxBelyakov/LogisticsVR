@@ -12,7 +12,11 @@ public class LoadingZoneManager : MonoBehaviour
     public bool arrested;                        // Flag police car arested trucks
 
     public GameObject parkingPoint;             // Warehouse parking point
-    public GameObject exit;                     // For testing
+
+    public List<Transform> bigTruckEnterWaypoints;      // Enter to loading zone waypoints
+    public List<Transform> bigTruckExitWaypoints;       // Exit from loading zone waypoints
+    public GameObject bigTruckParkingPoint;             // Warehouse parking point
+    public Transform trailerParkingPoint;               // Parking point for trailer
 
     void Update()
     {

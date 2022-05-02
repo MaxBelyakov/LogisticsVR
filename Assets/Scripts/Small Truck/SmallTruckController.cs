@@ -383,9 +383,6 @@ public class SmallTruckController : MonoBehaviour
         // Reset box counter
         int n = 0;
 
-        // All finded boxes
-        List<GameObject> boxes = new List<GameObject>(); 
-
         // Use box cast to expand ray of search
         RaycastHit[] targets = Physics.BoxCastAll(truckCargoScan.position, truckCargoScan.lossyScale, truckCargoScan.forward, truckCargoScan.rotation, truckLenght);
         if (targets.Length != 0)
@@ -396,25 +393,34 @@ public class SmallTruckController : MonoBehaviour
                 if (target.transform.tag == "forklift")
                 {
                     n = 0;
-                    boxes.Clear();
                     break;
                 }
 
                 // Add box to counter
                 if (target.transform.tag == "box")
-                {
-                    boxes.Add(target.transform.gameObject);
                     n++;
-                }
             }
 
-            // Unfix boxes on cargo pallet
-            if (n != 0 && boxes.Count != 0)
+            // Unfix all boxes on cargo pallet
+            if (n != 0)
             {
-                foreach (var box in boxes)
+                // Check all items again
+                foreach (var target in targets)
                 {
-                    if (box.GetComponent<FixedJoint>() != null)
-                        Destroy(box.GetComponent<FixedJoint>());
+                    // Find pallet
+                    if (target.transform.tag == "pallet")
+                    {
+                        // Find all boxes on pallet
+                        foreach (Transform child in target.transform)
+                        {
+                            // Unfreeze and unparent boxes
+                            if (child.tag == "box")
+                            {
+                                child.parent = null;
+                                child.GetComponent<Rigidbody>().isKinematic = false;
+                            }
+                        }
+                    }
                 }
             }
         }
