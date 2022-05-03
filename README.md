@@ -171,3 +171,11 @@ v.2.5.2:
 - update start moving process for big truck, there is no more need to go back before move forward;
 - fix: big truck stuck when exit warehouse;
 - fix: increase big truck floor level for the best forklift behavior.
+
+v.2.5.3:
+- fix: big truck rotation helper bug (need to change center coordinates of trailer);
+- fix: big truck sometimes park not correct;
+- fix: big truck sometimes can't start moving;
+- fix: big truck smoke when parked;
+- fix: big truck stop while delivery when police arest;
+- fix: forklift can't get pallet (boxes kinematic conflict with pallet).
