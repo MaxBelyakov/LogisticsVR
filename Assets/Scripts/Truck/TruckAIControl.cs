@@ -59,6 +59,8 @@ namespace Trucks
 
         public bool moveBack;                       // Flag when need to start moving back
 
+        public ParticleSystem ParticleBurnoutSmoke; // Engine smoke particle system
+
         private void Awake()
         {
             // get the car controller reference
@@ -85,6 +87,10 @@ namespace Trucks
                 // Car should not be moving,
                 // use handbrake to stop
                 m_CarController.Move(0, 0, 0f, 1f);
+
+                // Stop engine smoke when do not move
+                if (ParticleBurnoutSmoke.isEmitting)
+                    ParticleBurnoutSmoke.Stop();
             }
             else
             {
@@ -224,6 +230,10 @@ namespace Trucks
                 {
                     m_Driving = false;
                 }
+
+                // Engine smoke
+                if (ParticleBurnoutSmoke.isStopped)
+                    ParticleBurnoutSmoke.Play();
             }
         }
 

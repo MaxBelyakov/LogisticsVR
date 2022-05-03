@@ -46,7 +46,7 @@ public class Truck : MonoBehaviour
     void FixedUpdate()
     {
         // Listening to start moving to loading zone
-        if (loadingEnter && !getTarget && !FindObjectOfType<LoadingZoneManager>().arrested)
+        if (loadingEnter && !getTarget)
             MoveToLoadingZone();
 
         // Listening to start moving to warehouse parking zone
@@ -106,7 +106,7 @@ public class Truck : MonoBehaviour
             GetComponent<TruckAIControl>().moveBack = false;
 
             // Help truck and trailer to park
-            StartCoroutine(ParkingHelperWaiter(FindObjectOfType<LoadingZoneManager>().trailerParkingPoint));
+            StartCoroutine(ParkingHelperWaiter(FindObjectOfType<LoadingZoneManager>().bigTruckParkingPoint.transform));
 
             // Count boxes in truck before unloading
             CheckTrailerCargo(true);
@@ -171,6 +171,9 @@ public class Truck : MonoBehaviour
         GetComponent<TruckAIControl>().startMoving = true;
         GetComponent<TruckAIControl>().m_Driving = true;
         GetComponent<TruckAIControl>().moveBack = true;
+
+        // Add extra power to start moving
+        transform.GetComponent<Rigidbody>().velocity = new Vector3(0, 0, 4f);
     }
 
     // Move to EXIT ZONE
@@ -188,7 +191,8 @@ public class Truck : MonoBehaviour
             GetComponent<TruckAIControl>().m_Driving = true;
 
             // Add extra power to start moving
-            transform.Translate(transform.forward * Time.deltaTime);
+            if (GetComponent<Rigidbody>().velocity.magnitude < 1f)
+                GetComponent<Rigidbody>().velocity = new Vector3(0, 0, -4f);
         }
     }
 
@@ -296,33 +300,33 @@ public class Truck : MonoBehaviour
         var rotationThreshold = -0.9999f;
         var positionThreshold = 0.01f;
 
+        // Determine which direction to rotate towards. Get parking point and move it forward
+        Vector3 targetDirection = target.position + target.forward * 40f - transform.position;
+        
+        // Rotate the forward vector towards the target direction by one step
+        Vector3 newDirection = Vector3.RotateTowards(transform.forward, targetDirection, 0.5f * Time.deltaTime, 0.0f);
+
+        // Calculate difference between truck and target position
+        var posX = Mathf.Abs(transform.position.x - target.position.x);
+        var posZ = Mathf.Abs(transform.position.z - target.position.z);
+
+        // Compare truck rotation with the target
+        if (newDirection.z > rotationThreshold)
+            // Applies rotation to truck target
+            transform.rotation = Quaternion.LookRotation(newDirection);
+        else
+            rotation = true;
+
+        // Compare truck position with the target
+        if (posX <= positionThreshold && posZ <= positionThreshold)
+            position = true;
+        else
+            // Applies moving to truck target
+            transform.position = Vector3.MoveTowards(transform.position, target.position, 1.5f * Time.deltaTime);
+
         // Parking to loading zone helper
         if (parking)
         {
-            // Determine which direction to rotate towards. Get parking point and move it forward
-            Vector3 targetDirection = target.position + target.forward * 40f - transform.position;
-            
-            // Rotate the forward vector towards the target direction by one step
-            Vector3 newDirection = Vector3.RotateTowards(transform.forward, targetDirection, 0.5f * Time.deltaTime, 0.0f);
-
-            // Calculate difference between truck and target position
-            var posX = Mathf.Abs(transform.position.x - target.position.x);
-            var posZ = Mathf.Abs(transform.position.z - target.position.z);
-
-            // Compare truck rotation with the target
-            if (!rotation && newDirection.z > rotationThreshold)
-                // Applies rotation to truck target
-                transform.rotation = Quaternion.LookRotation(newDirection);
-            else
-                rotation = true;
-
-            // Compare truck position with the target
-            if (!position && posX > positionThreshold && posZ > positionThreshold)
-                // Applies moving to truck target
-                transform.position = Vector3.MoveTowards(transform.position, target.position, 1.5f * Time.deltaTime);
-            else
-                position = true;
-            
             // Correct target height (trailer and truck center on different height)
             Vector3 truckTarget = new Vector3(transform.position.x, trailer.transform.position.y, transform.position.z);
 
@@ -332,36 +336,17 @@ public class Truck : MonoBehaviour
             // Rotate the forward vector towards the target direction by one step
             Vector3 trailerNewDirection = Vector3.RotateTowards(trailer.transform.forward, trailerTargetDirection, Time.deltaTime, 0.0f);
 
-            if (rotation && position)
-            {
-                // Compare trailer rotation with the target
-                if (Mathf.Abs(trailerNewDirection.x) >= 0.02f)
-                    // Applies rotation to trailer target
-                    trailer.transform.rotation = Quaternion.LookRotation(trailerNewDirection);
-                else
-                    trailerRotation = true;
-            }
-            
-            // Finish parking helper
-            if (rotation && position && trailerRotation)
-                parkingHelper = null;
-        }
-        
-        // Parking to warehouse helper
-        if (parked)
-        {
-            // Calculate difference between truck and target position
-            var trailerPosX = Mathf.Abs(trailer.transform.position.x - target.position.x);
-            var trailerPosZ = Mathf.Abs(trailer.transform.position.z - target.position.z);
-
-            // Compare truck position with the target
-            if (trailerPosX > positionThreshold && trailerPosZ > positionThreshold)
-                // Applies moving to truck target
-                trailer.transform.position = Vector3.MoveTowards(trailer.transform.position, target.position, 1.5f * Time.deltaTime);
+            // Compare trailer rotation with the target
+            if (Mathf.Abs(trailerNewDirection.x) >= 0.02f)
+                // Applies rotation to trailer target
+                trailer.transform.rotation = Quaternion.LookRotation(trailerNewDirection);
             else
-                // Finish parking helper
-                parkingHelper = null;
+                trailerRotation = true;
         }
+            
+        // Finish parking helper
+        if (rotation && position && trailerRotation)
+            parkingHelper = null;
     }
 
     // First step of Parking Helper function. Start correction and wait. Then set accurate position and rotation
@@ -370,7 +355,7 @@ public class Truck : MonoBehaviour
         // Start correction to target
         parkingHelper = target;
 
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(2f);
 
         // Accurate position and rotation of truck and trailer
         if (parked)
@@ -382,8 +367,11 @@ public class Truck : MonoBehaviour
             trailer.GetComponent<Rigidbody>().isKinematic = true;
             transform.GetComponent<Rigidbody>().isKinematic = true;
 
-            // Set trailer accurate position
-            trailer.transform.position = target.position;
+            // Set truck and trailer accurate position
+            transform.position = target.position;
+            transform.rotation = target.rotation;
+            trailer.transform.position = FindObjectOfType<LoadingZoneManager>().trailerParkingPoint.position;
+            trailer.transform.rotation = FindObjectOfType<LoadingZoneManager>().trailerParkingPoint.rotation;
         }
     }
 }

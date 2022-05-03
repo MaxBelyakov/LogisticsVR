@@ -38,8 +38,8 @@ public class CallTruckButton : MonoBehaviour
             light1.color = Color.green;
             light2.color = Color.green;
 
-            // Listening for player push button trigger
-            if (!isPressed && GetValue() + threshold >= 1f)
+            // Listening for player push button trigger and check for police arrest
+            if (!isPressed && GetValue() + threshold >= 1f && !FindObjectOfType<LoadingZoneManager>().arrested)
                 Pressed();
         }
         else

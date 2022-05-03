@@ -181,7 +181,6 @@ namespace Trucks
             GearChanging();
 
             AddDownForce();
-            CheckForWheelSpin();
             TractionControl();
         }
 
@@ -274,27 +273,6 @@ namespace Trucks
         {
             m_WheelColliders[0].attachedRigidbody.AddForce(-transform.up*m_Downforce*
                                                          m_WheelColliders[0].attachedRigidbody.velocity.magnitude);
-        }
-
-
-        // checks if the wheels are spinning and is so does three things
-        // 1) emits particles
-        // these effects are controlled through the WheelEffects class
-        private void CheckForWheelSpin()
-        {
-            // loop through all wheels
-            for (int i = 0; i < 4; i++)
-            {
-                WheelHit wheelHit;
-                m_WheelColliders[i].GetGroundHit(out wheelHit);
-
-                // is the tire slipping above the given threshhold
-                if (Mathf.Abs(wheelHit.forwardSlip) >= m_SlipLimit || Mathf.Abs(wheelHit.sidewaysSlip) >= m_SlipLimit)
-                {
-                    m_WheelEffects[i].EmitTyreSmoke();
-                    continue;
-                }
-            }
         }
 
         // crude traction control that reduces the power to wheel if the car is wheel spinning too much
