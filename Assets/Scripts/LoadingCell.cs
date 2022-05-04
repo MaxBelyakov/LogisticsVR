@@ -21,7 +21,8 @@ public class LoadingCell : MonoBehaviour
     void OnTriggerEnter(Collider collider)
     {
         // Check for waiting truck
-        if (collider.transform.parent.parent.gameObject == waitingTruck)
-            readyForLoading = waitingTruck;
+        if (collider.transform.tag == "small truck")
+            if (collider.transform.parent.parent.gameObject == waitingTruck)
+                readyForLoading = waitingTruck;
     }
 }

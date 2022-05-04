@@ -247,7 +247,7 @@ public class SmallTruckController : MonoBehaviour
                     // Switch on target particle
                     point.transform.GetChild(0).gameObject.SetActive(true);
 
-                    yield return new WaitForSeconds(10f);
+                    yield return new WaitForSeconds(20f);
 
                     // Switch off target particle
                     point.transform.GetChild(0).gameObject.SetActive(false);

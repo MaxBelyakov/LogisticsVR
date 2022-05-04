@@ -5,9 +5,12 @@ public class Forklift : MonoBehaviour
     public GameObject shifter;                  // Forklift shifter
     public GameObject lift;                     // Forklift lift
 
-    private float speed = 0.5f;                   // Lift speed
+    private float speed = 0.5f;                 // Lift speed
     private float liftMaxHeight = 2f;           // Lift max height
     private float liftMinHeight = 0.636f;       // Lift min height
+
+    private float liftX;                        // Saved X position of lift
+    private float liftZ;                        // Saved Z position of lift
 
     private HingeJoint hinge;                   // Forklift hinge joint
 
@@ -24,10 +27,17 @@ public class Forklift : MonoBehaviour
         // Calculate shifter limits
         angleWithMinLimit = shifter.transform.eulerAngles.x + hinge.limits.min;
         angleWithMaxLimit = shifter.transform.eulerAngles.x + hinge.limits.max;
+
+        // Save lift local position X and Z
+        liftX = lift.transform.localPosition.x;
+        liftZ = lift.transform.localPosition.z;
     }
 
     void FixedUpdate()
     {
+        // Hold lift local position X and Z
+        lift.transform.localPosition = new Vector3(liftX, lift.transform.localPosition.y, liftZ);
+
         // Reached Min
         if(shifter.transform.eulerAngles.x - angleWithMinLimit < angleBetweenThreshold)
         {

@@ -5,6 +5,16 @@ using UnityEngine.XR.Interaction.Toolkit;
 
 public class XROffsetGrabInteractable : XRGrabInteractable
 {
+    public override bool IsSelectableBy(IXRSelectInteractor interactor)
+    {
+        // Boxes are not grabbable if kinematic (on pallet)
+        if (GetComponent<Rigidbody>() != null)
+            if (GetComponent<Rigidbody>().isKinematic)
+                return false;
+
+        return base.IsSelectableBy(interactor);
+    }
+
     void Start()
     {
         // Create new attach pivot
