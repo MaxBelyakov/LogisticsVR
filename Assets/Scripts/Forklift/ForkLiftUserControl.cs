@@ -127,12 +127,12 @@ namespace ForkLift
             if (Mathf.RoundToInt(hinge.angle) > Mathf.RoundToInt(oldAngle))
             {
                 if (!limit)
-                    h += 0.01f;
+                    h += 0.005f;
             }
             else if (Mathf.RoundToInt(hinge.angle) < Mathf.RoundToInt(oldAngle))
             {
                 if (!limit)
-                    h -= 0.01f;
+                    h -= 0.005f;
             }
             else
                 limit = false;

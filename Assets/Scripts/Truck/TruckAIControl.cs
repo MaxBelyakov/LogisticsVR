@@ -241,7 +241,7 @@ namespace Trucks
         IEnumerator StartTimer() {
             startMoving = false;
             startTimer = true;
-            yield return new WaitForSeconds(2f);
+            yield return new WaitForSeconds(5f);
             startTimer = false;
         }
 
@@ -253,6 +253,14 @@ namespace Trucks
             // Second step. Change direction while moving back
             get_back_direction *= -1;
             yield return new WaitForSeconds(2f);
+
+            // Slow truck
+            m_Rigidbody.drag = 5;
+
+            yield return new WaitForSeconds(1f);
+
+            // Cancel slow truck
+            m_Rigidbody.drag = 0;
 
             get_back = false;
             get_stuck = false;

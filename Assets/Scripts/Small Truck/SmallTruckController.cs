@@ -150,7 +150,11 @@ public class SmallTruckController : MonoBehaviour
             getTarget = true;
 
             // Truck start moving
-            TruckStartMoving(true);
+            GetComponent<CarAIControl>().startMoving = true;
+            GetComponent<CarAIControl>().m_Driving = true;
+
+            // Add extra power to start moving
+            transform.Translate(transform.forward * Time.deltaTime * 2f);
         } 
         else
         {
@@ -177,7 +181,11 @@ public class SmallTruckController : MonoBehaviour
             getTarget = true;
 
             // Truck start moving
-            TruckStartMoving(true);
+            GetComponent<CarAIControl>().startMoving = true;
+            GetComponent<CarAIControl>().m_Driving = true;
+
+            // Add extra power to start moving
+            transform.Translate(transform.forward * Time.deltaTime * 2f);
         } 
         else
         {
@@ -197,7 +205,12 @@ public class SmallTruckController : MonoBehaviour
         getTarget = true;
 
         // Truck start moving (back)
-        TruckStartMoving(false);
+        GetComponent<CarAIControl>().startMoving = true;
+        GetComponent<CarAIControl>().m_Driving = true;
+        GetComponent<CarAIControl>().moveBack = true;
+
+        // Add extra power to start moving
+        transform.GetComponent<Rigidbody>().velocity = new Vector3(0, 0, 4f);
     }
 
     // Delivery process
@@ -211,7 +224,11 @@ public class SmallTruckController : MonoBehaviour
             getTarget = true;
 
             // Truck start moving
-            TruckStartMoving(true);
+            GetComponent<CarAIControl>().startMoving = true;
+            GetComponent<CarAIControl>().m_Driving = true;
+
+            // Add extra power to start moving
+            transform.Translate(transform.forward * Time.deltaTime * 2f);
         } 
         else
         {
@@ -292,7 +309,11 @@ public class SmallTruckController : MonoBehaviour
         i++;
 
         // Truck start moving
-        TruckStartMoving(true);
+        GetComponent<CarAIControl>().startMoving = true;
+        GetComponent<CarAIControl>().m_Driving = true;
+
+        // Add extra power to start moving
+        transform.Translate(transform.forward * Time.deltaTime * 2f);
     }
 
     // Go to Loading manager
@@ -303,7 +324,11 @@ public class SmallTruckController : MonoBehaviour
         getTarget = true;
 
         // Truck start moving
-        TruckStartMoving(true);
+        GetComponent<CarAIControl>().startMoving = true;
+        GetComponent<CarAIControl>().m_Driving = true;
+
+        // Add extra power to start moving
+        transform.Translate(transform.forward * Time.deltaTime * 2f);
     }
 
     // Check for get target
@@ -318,26 +343,6 @@ public class SmallTruckController : MonoBehaviour
         return false;
     }
 
-    // Truck start moving function
-    void TruckStartMoving(bool cancelMoveBack)
-    {
-        // Start moving (controls by two variables, check CarAIControl for more info)
-        GetComponent<CarAIControl>().startMoving = true;
-        GetComponent<CarAIControl>().m_Driving = true;
-
-        // Fix: truck dont move forward after switch off m_Driving parametr. Need to revert accel value for a 0.1 sec.
-        GetComponent<CarAIControl>().moveBack = true;
-        if (cancelMoveBack)
-            StartCoroutine(CancelMoveBack());
-    }
-
-    // Fix: truck dont move forward after switch off m_Driving parametr. Need to revert accel value for a 0.1 sec.
-    IEnumerator CancelMoveBack()
-    {
-        yield return new WaitForSeconds(0.1f);
-        GetComponent<CarAIControl>().moveBack = false;
-    }
-
     // Waiting a little to start move to exit
     IEnumerator WaitForExitLoadingZone()
     {
@@ -346,12 +351,13 @@ public class SmallTruckController : MonoBehaviour
 
         yield return new WaitForSeconds(2f);
 
+        // Destroy pallets inside truck
+        RemovePallets();
+
         // Change flags
         waiting = false;
         parked = false;
         loaded = true;
-
-        yield return new WaitForSeconds(2f);
 
         // Unfreeze truck
         transform.GetComponent<Rigidbody>().isKinematic = false;
@@ -421,14 +427,6 @@ public class SmallTruckController : MonoBehaviour
                             }
                         }
                     }
-                }
-
-                // For destroy pallet need to do it in separate circle
-                foreach (var target in targets)
-                {
-                    // Find and destroy pallet
-                    if (target.transform.tag == "pallet")
-                        Destroy(target.transform.gameObject);
                 }
             }
         }
@@ -514,5 +512,21 @@ public class SmallTruckController : MonoBehaviour
         // Finish parking helper
         if (rotation && position)
             parkingHelper = null;        
+    }
+
+    // Destroy pallets in truck before start moving to avoid truck crash)
+    void RemovePallets()
+    {
+        // Use box cast to expand ray of search
+        RaycastHit[] targets = Physics.BoxCastAll(truckCargoScan.position, truckCargoScan.lossyScale, truckCargoScan.forward, truckCargoScan.rotation, truckLenght);
+        if (targets.Length != 0)
+        {
+            foreach (var target in targets)
+            {
+                // Find and destroy pallet
+                if (target.transform.tag == "pallet")
+                    Destroy(target.transform.gameObject);
+            }
+        }
     }
 }

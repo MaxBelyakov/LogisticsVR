@@ -7161,8 +7161,8 @@ MonoBehaviour:
   m_MaximumSteerAngle: 35
   m_SteerHelper: 0.556
   m_TractionControl: 0.472
-  m_FullTorqueOverAllWheels: 3000
-  m_ReverseTorque: 100
+  m_FullTorqueOverAllWheels: 1000
+  m_ReverseTorque: 800
   m_MaxHandbrakeTorque: 100000000
   m_Downforce: 100
   m_SpeedType: 0
@@ -7197,7 +7197,7 @@ MonoBehaviour:
   m_Driving: 1
   m_Target: {fileID: 0}
   m_StopWhenTargetReached: 0
-  m_ReachTargetThreshold: 2
+  m_ReachTargetThreshold: 3
   startMoving: 0
   moveBack: 0
   ParticleBurnoutSmoke: {fileID: 1125252008453352846}
