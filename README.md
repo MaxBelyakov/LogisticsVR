@@ -179,3 +179,17 @@ v.2.5.3:
 - fix: big truck smoke when parked;
 - fix: big truck stop while delivery when police arest;
 - fix: forklift can't get pallet (boxes kinematic conflict with pallet).
+
+v.2.6 - 2.6.1 (release):
+- prize desk, player can buy items by game money;
+- hand disable when get prize;
+- fix: forklift lift sometimes disconnecting;
+- fix: forklift crash when moving between truck and warehouse;
+- fix: forklift rudder turn slower;
+- fix: can take box from kinematic pallet;
+- fix: pallet destroy but boxes are still in air;
+- fix: big truck get stuck repair;
+- fix: update small truck moving (delete move back patch);
+- fix: change unloading point positions;
+- fix: loud box drop audio when player is far from source;
+- fix: money counter.
