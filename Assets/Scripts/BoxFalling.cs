@@ -28,5 +28,8 @@ public class BoxFalling : MonoBehaviour
 
         // Send counter to info desk
         GameObject.FindGameObjectWithTag("info desk").GetComponent<InfoDesk>().delivered++;
+
+        // Add money
+        GameObject.FindGameObjectWithTag("info desk").GetComponent<InfoDesk>().money += GameObject.FindGameObjectWithTag("info desk").GetComponent<InfoDesk>().deliveredPrice;
     }
 }

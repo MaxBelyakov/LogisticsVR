@@ -278,6 +278,11 @@ public class Truck : MonoBehaviour
         {
             // Send counter to info desk. Take in account amount of boxes before unloading truck
             GameObject.FindGameObjectWithTag("info desk").GetComponent<InfoDesk>().unloaded += boxesInTruck - m;
+
+            // Add money
+            GameObject.FindGameObjectWithTag("info desk").GetComponent<InfoDesk>().money += boxesInTruck - m;
+
+            // Update boxes storage
             boxesInTruck = m;
         }
 

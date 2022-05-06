@@ -422,6 +422,14 @@ public class SmallTruckController : MonoBehaviour
                         }
                     }
                 }
+
+                // For destroy pallet need to do it in separate circle
+                foreach (var target in targets)
+                {
+                    // Find and destroy pallet
+                    if (target.transform.tag == "pallet")
+                        Destroy(target.transform.gameObject);
+                }
             }
         }
 
@@ -459,6 +467,9 @@ public class SmallTruckController : MonoBehaviour
 
             // Send counter to info desk
             GameObject.FindGameObjectWithTag("info desk").GetComponent<InfoDesk>().loaded += m;
+
+            // Add money
+            GameObject.FindGameObjectWithTag("info desk").GetComponent<InfoDesk>().money += m;
 
             // Reset boxes storage
             boxesInTruck = 0;

@@ -14,6 +14,7 @@ TagManager:
   - loading zone manager
   - unloading reticle
   - info desk
+  - prize
   layers:
   - Default
   - TransparentFX

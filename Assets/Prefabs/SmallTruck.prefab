@@ -6493,7 +6493,7 @@ MonoBehaviour:
   - {fileID: 467752714791845455}
   - {fileID: 467752714740477397}
   - {fileID: 467752714631861368}
-  m_CentreOfMassOffset: {x: 0, y: 0, z: 0}
+  m_CentreOfMassOffset: {x: 0, y: 0, z: 2}
   m_MaximumSteerAngle: 55
   m_SteerHelper: 0.556
   m_TractionControl: 0.472
